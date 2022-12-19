@@ -23,6 +23,6 @@ fn day1() {
             cal_sum += cal_int; 
         }
     }
-    println!("{}",cal_the_big_one);
+    println!("this is the big one: {}",cal_the_big_one);
 }
 
