@@ -2,8 +2,11 @@ use std::fs;
 use substring::Substring;
 
 fn main() {
-    let filetext: String = fs::read_to_string(r"data\day2input.txt").expect("Invalid File.");
+    part1(); 
+}
 
+fn part1() {
+    let filetext: String = fs::read_to_string(r"data\day2input.txt").expect("Invalid File.");
     let mut score: i32 = 0;
     for line in filetext.lines() {
         let myplaychar: &str = line.substring(2, 3);
