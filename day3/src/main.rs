@@ -11,6 +11,7 @@ fn part1() {
     let mut compart1: &str;
     let mut compart2: &str;
     let mut compartsize: usize;
+    let mut score: u32 = 0;
 
     for line in filetext.lines() {
         compartsize = line.len() / 2;
@@ -20,12 +21,21 @@ fn part1() {
         println!("Ruck: {}, Compartment Size: {}", line, compartsize);
         println!("Compartment1:{}, Compartment2:{}", compart1, compart2);
 
-        for c1 in compart1.chars() {
+        'outer: for c1 in compart1.chars() {
             for c2 in compart2.chars() {
                 if c1 == c2 {
-                    println!("{}", c1);
+                    let mut mapping = 1;
+                    for alpha in "abcdefghijklmnopqrstuvwxyzABCDEFGHIJKLMNOPQRSTUVWXYZ".chars() {
+                        if c1 == alpha {
+                            score += mapping;
+                            println!("{},{}", c1, mapping);
+                            break 'outer;
+                        }
+                        mapping += 1;
+                    }
                 }
             }
         }
     }
+    println!("Priority Sum is: {}", score);
 }
