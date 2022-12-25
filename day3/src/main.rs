@@ -38,10 +38,36 @@ fn part1() {
 
 fn part2() {
     let filetext: String = fs::read_to_string(r"data\day3input.txt").expect("Invalid File.");
+    let mut ruck1: &str=""; 
+    let mut ruck2: &str=""; 
+    let mut ruck3: &str=""; 
     let mut i: u32 = 1;
-    let mut ruck1: &str; 
+    let mut j :u32 = 1; 
     for line in filetext.lines() {
-        println!("{}",i);
+        if i==4 {
+            i=1; 
+        }
+        if i==1 {
+            ruck1=line; 
+        }
+        if i==2 {
+            ruck2=line; 
+        }
+        if i==3 {
+            ruck3=line; 
+            for r1 in ruck1.chars(){
+                for r2 in ruck2.chars(){
+                    if r1==r2 {
+                        for r3 in ruck3.chars(){
+                            if r2==r3 {
+                                println!("{}-{}",j,r2);
+                            }
+                        }
+                    }
+                }
+            }
+        }
         i += 1;
+        j += 1; 
     }
 }
