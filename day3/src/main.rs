@@ -3,6 +3,7 @@ use substring::Substring;
 
 fn main() {
     part1();
+    part2();
 }
 
 fn part1() {
@@ -17,10 +18,6 @@ fn part1() {
         compartsize = line.len() / 2;
         compart1 = line.substring(0, compartsize);
         compart2 = line.substring(compartsize, line.len());
-
-        println!("Ruck: {}, Compartment Size: {}", line, compartsize);
-        println!("Compartment1:{}, Compartment2:{}", compart1, compart2);
-
         'outer: for c1 in compart1.chars() {
             for c2 in compart2.chars() {
                 if c1 == c2 {
@@ -28,7 +25,6 @@ fn part1() {
                     for alpha in "abcdefghijklmnopqrstuvwxyzABCDEFGHIJKLMNOPQRSTUVWXYZ".chars() {
                         if c1 == alpha {
                             score += mapping;
-                            println!("{},{}", c1, mapping);
                             break 'outer;
                         }
                         mapping += 1;
@@ -38,4 +34,26 @@ fn part1() {
         }
     }
     println!("Priority Sum is: {}", score);
+}
+
+fn part2() {
+    let filetext: String = fs::read_to_string(r"data\day3input.txt").expect("Invalid File.");
+    let mut i: u32 = 1;
+    let mut ruck1: &str;
+    let mut ruck2: &str;
+    let mut ruck3: &str;
+
+    for line in filetext.lines() {
+        if i == 4 {
+            i = 1;
+        }
+        if i == 1 {
+            ruck1 = line;
+        } else if i == 2 {
+            ruck2 = line;
+        } else if i == 3 {
+            ruck3 = line;
+        }
+        i += 1;
+    }
 }
