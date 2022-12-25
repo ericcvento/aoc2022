@@ -40,7 +40,7 @@ fn part2() {
     let filetext: String = fs::read_to_string(r"data\day3input.txt").expect("Invalid File.");
     let mut ruck1: &str = "";
     let mut ruck2: &str = "";
-    let mut ruck3: &str = "";
+    let mut ruck3: &str;
     let mut score: u32 = 0;
     let mut i: u32 = 1;
     for line in filetext.lines() {
