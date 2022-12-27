@@ -8,6 +8,7 @@ fn part1() {
     let filetext: String = fs::read_to_string(r"data\day4input.txt").expect("Invalid File.");
     for elfpair in filetext.lines() {
    
-        let (fst,snd) = elfpair.split_once(',').unwrap();
+        let (elf1,elf2) = elfpair.split_once(',').unwrap();
+        println!("{} - {}",elf1,elf2); 
     }
 }
