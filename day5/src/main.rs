@@ -19,4 +19,13 @@ fn part1() {
             j += 4;
         }
     }
+
+    //reverse order of crates on columns
+    println!("{:?}",columns[0]); 
+    for i in 0..8 {
+        println!("Stack: {}",i); 
+        println!("{:?}",columns[i]); 
+        columns[i].reverse();
+        println!("{:?}",columns[i]);
+    }
 }
