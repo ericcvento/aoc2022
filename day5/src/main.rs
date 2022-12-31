@@ -26,13 +26,10 @@ fn part1() {
 
     //reverse order of crates on columns
     for i in columns.iter_mut() {
-        println!("{:?}", i);
         i.reverse();
-        i.truncate(i.len());
-        println!("{:?}", i);
     }
 
-    //crane directions
+    //parse crane directions
     for l in filetext.lines() {
         if l.substring(0, 4) == "move" {
             let mut n: i32 = 0;
@@ -47,18 +44,15 @@ fn part1() {
                     to = ll.parse().unwrap();
                 }
             }
-            //execute instructions;
-            //println!("move {} crates from column {} to {}.",n,from,to);
+            //execute crane instructions
             for i in 0..n {
                 let crate_contents: &str = columns[from - 1].pop().unwrap();
                 columns[to - 1].push(crate_contents);
-                columns[from - 1].shrink_to_fit();
-                columns[to - 1].shrink_to_fit();
             }
         }
     }
     println!("Columns");
-    for i in columns.iter_mut() {
-        println!("{:?}", i);
+    for (i, c) in columns.iter_mut().enumerate() {
+        println!("{}-{:?}", i + 1, c);
     }
 }
