@@ -19,8 +19,4 @@ fn part1() {
             j += 4;
         }
     }
-
-    for i in 0..8 {
-        println!("{:?}", columns[i]);
-    }
 }
