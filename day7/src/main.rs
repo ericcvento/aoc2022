@@ -6,9 +6,9 @@ fn read_data() -> String {
     return filetext;
 }
 
-fn map_directories((history): (String)) {
-    let mut directory: Vec<&str> = Vec::new();
-    let mut cwd: &str = "/";
+fn map_directories(history: String) {
+    let mut directory: Vec<String> = Vec::new();
+    let mut cwd= "/";
 
     for h in history.lines() {
         //these are commands
@@ -23,17 +23,24 @@ fn map_directories((history): (String)) {
 
             //navigate
             if command == "cd" {
-                if command_suffix == ".." {
-                    println!("{} {}-change to parent dir", command, command_suffix);
-                } else if command_suffix == "/" {
-                    println!("{} {}-back to root", command, command_suffix);
+                if command_suffix == "/" {
+                    println!("{} {}, back to root", command, command_suffix);
+                    cwd = "/";
+                } else if command_suffix == ".." {
+                    println!("{} {}, change to parent dir", command, command_suffix);
                 } else {
-                    assert!(!command_suffix.is_empty()); 
-                    println!("{} {}-move down to {}",command, command_suffix,command_suffix); 
+                    assert!(!command_suffix.is_empty());
+                    println!(
+                        "{} {}, move down to {}",
+                        command, command_suffix, command_suffix
+                    );
                 }
             }
         }
     }
+    directory.sort();
+    directory.dedup();
+    println!("{:?}", directory);
 }
 
 fn main() {
