@@ -17,7 +17,13 @@ fn main() {
             //these are commands;
             let mut command_split = line.split('$');
             command_split.next();
-            let command: &str = command_split.next().unwrap();
+            let command: &str = command_split.next().unwrap().trim();
+            let command_prefix: &str = command.substring(0, 2);
+            let command_suffix: &str = command.substring(3, command.len());
+            //change directory
+            if command.substring(0, 2) == "cd" {
+                println!("{} {}", command_prefix, command_suffix);
+            }
             println!("{}", command);
         } else {
             //these are output
