@@ -8,7 +8,7 @@ fn read_data() -> String {
 
 fn map_directories(history: String) {
     let mut directory: Vec<String> = Vec::new();
-    let mut cwd= "/";
+    let mut cwd = String::from("/");
 
     for h in history.lines() {
         //these are commands
@@ -19,28 +19,37 @@ fn map_directories(history: String) {
             //checks & tests
             if command == "ls" {
                 assert!(command_suffix.is_empty());
+                println!("{}",h); 
             }
 
-            //navigate
+            //navigate & build out directory structure by modifying cwd
             if command == "cd" {
                 if command_suffix == "/" {
-                    println!("{} {}, back to root", command, command_suffix);
-                    cwd = "/";
+                    cwd = "/".to_string();
                 } else if command_suffix == ".." {
-                    println!("{} {}, change to parent dir", command, command_suffix);
+                    let mut p: char=' '; 
+                    while p != '/' {
+                        p=cwd.pop().unwrap();
+                    }
+                    cwd.push_str("/"); 
                 } else {
                     assert!(!command_suffix.is_empty());
-                    println!(
-                        "{} {}, move down to {}",
-                        command, command_suffix, command_suffix
-                    );
+                    cwd.push_str(command_suffix); 
+                    cwd.push_str("/"); 
                 }
             }
+            //not really sure why I have to clone this instead of just using the value here.
+            //something to do with ownership
+            let dcwd=cwd.clone(); 
+            directory.push(dcwd); 
         }
     }
     directory.sort();
     directory.dedup();
-    println!("{:?}", directory);
+    for d in directory {
+        //println!(""); 
+        //println!("{}",d); 
+    }
 }
 
 fn main() {
