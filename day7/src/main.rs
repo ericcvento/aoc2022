@@ -1,6 +1,8 @@
+use itertools::Itertools;
 use std::collections::HashMap;
 use std::fs;
 use substring::Substring;
+use thousands::Separable;
 
 fn read_data() -> String {
     let ft: String = fs::read_to_string(r"data\day7input.txt").expect("Invalid File.");
@@ -79,8 +81,33 @@ fn main() {
         "The total size of directories under 100k is {}.",
         cum_rel_dir_size
     );
+
+    //day2
+    day2(directory_sizes, file_list);
 }
 
-fn day2 () -> u32 {
-    return 69; 
+fn day2(dir_sizes: HashMap<String, u32>, file_sizes: HashMap<String, u32>) -> u32 {
+    //how much space do we need to clear?
+    let total_disk_size = 70_000_000;
+    let update_size: u32 = 30_000_000;
+    let mut total_used_size: u32 = 0;
+    for (_f, size) in file_sizes {
+        total_used_size += size;
+    }
+    println!(
+        "total disk size: {}",
+        total_disk_size.separate_with_commas()
+    );
+    println!("used space: {}", total_used_size.separate_with_commas());
+    println!("update size {}", update_size.separate_with_commas());
+
+    let free_space_needed = update_size - (total_disk_size - total_used_size);
+
+    for v in dir_sizes.values().sorted() {
+        if v >= &free_space_needed {
+            println!("kill the directory of size: {}", v.separate_with_commas());
+            break;
+        }
+    }
+    69
 }
