@@ -80,3 +80,7 @@ fn main() {
         cum_rel_dir_size
     );
 }
+
+fn day2 () -> u32 {
+    return 69; 
+}
