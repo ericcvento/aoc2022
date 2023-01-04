@@ -39,7 +39,9 @@ fn main() {
                 directory_list.push(current_working_directory.clone());
             }
             //list directory
-            if command_suffix == "ls" {}
+            if command_prefix == "ls" {
+                assert!(command_suffix.is_empty());
+            }
         } else {
             let output_split: Vec<&str> = line.split_whitespace().collect();
             if output_split[0] == "dir" {
@@ -52,14 +54,29 @@ fn main() {
             }
         }
     }
+
     directory_list.sort();
     directory_list.dedup();
-
+    //create a mapping between directory list and size of files
+    let mut directory_sizes: HashMap<String, u32> = HashMap::new();
     for d in directory_list.iter() {
-        println!("{d}");
+        let mut cum_file_size: u32 = 0;
+        for (k, v) in file_list.iter() {
+            if d == k.substring(0, d.len()) {
+                cum_file_size += v;
+            }
+            directory_sizes.insert(d.to_string(), cum_file_size);
+        }
     }
-
-    for (k, v) in &file_list {
-        println! {"{k}   {v}"};
+    //size of directories under 100000
+    let mut cum_rel_dir_size: u32 = 0;
+    for (_dir, size) in directory_sizes.iter() {
+        if size < &100_000 {
+            cum_rel_dir_size += size;
+        }
     }
+    println!(
+        "The total size of directories under 100k is {}.",
+        cum_rel_dir_size
+    );
 }
