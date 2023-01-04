@@ -1,3 +1,4 @@
+use std::collections::HashMap;
 use std::fs;
 use substring::Substring;
 
@@ -11,6 +12,7 @@ fn main() {
 
     //initialize cwd as root
     let mut directory_list: Vec<String> = vec![];
+    let mut file_list: Vec<String> = vec![];
     let mut current_working_directory = String::from("");
     //go through each line of history
     for line in filetext.lines() {
@@ -40,17 +42,20 @@ fn main() {
             if command_suffix == "ls" {}
         } else {
             let output_split: Vec<&str> = line.split_whitespace().collect();
-            println!("{} {}", output_split[1], output_split[0]);
             if output_split[0] == "dir" {
                 directory_list.push(current_working_directory.clone() + "/" + output_split[1]);
             } else {
-                directory_list.push(current_working_directory.clone() + "/" + output_split[0]);
+                file_list.push(current_working_directory.clone() + "/" + output_split[0]);
             }
         }
     }
     directory_list.sort();
     directory_list.dedup();
+
     for d in directory_list.iter() {
         println!("{d}");
+    }
+    for f in file_list.iter() {
+        println!("{f}");
     }
 }
