@@ -10,7 +10,8 @@ fn main() {
     let filetext = read_data();
 
     //initialize cwd as root
-    let mut current_working_directory = String::from("/");
+    let mut directory_list: Vec<String> = vec![];
+    let mut current_working_directory = String::from("");
     //go through each line of history
     for line in filetext.lines() {
         if line.substring(0, 1) == "$" {
@@ -21,10 +22,9 @@ fn main() {
             let command_prefix: &str = command.substring(0, 2);
             let command_suffix: &str = command.substring(3, command.len());
             //change directory
-            if command.substring(0, 2) == "cd" {
-                println!("{} {}", command_prefix, command_suffix);
+            if command_prefix == "cd" {
                 if command_suffix == "/" {
-                    current_working_directory = "/".to_string();
+                    current_working_directory = "".to_string();
                 } else if command_suffix == ".." {
                     let mut p: char = ' ';
                     while p != '/' {
@@ -34,10 +34,23 @@ fn main() {
                     current_working_directory.push('/');
                     current_working_directory.push_str(command_suffix);
                 }
+                directory_list.push(current_working_directory.clone());
             }
-            println!("{}", command);
+            //list directory
+            if command_suffix == "ls" {}
         } else {
-            //these are output
+            let output_split: Vec<&str> = line.split_whitespace().collect();
+            println!("{} {}", output_split[1], output_split[0]);
+            if output_split[0] == "dir" {
+                directory_list.push(current_working_directory.clone() + "/" + output_split[1]);
+            } else {
+                directory_list.push(current_working_directory.clone() + "/" + output_split[0]);
+            }
         }
+    }
+    directory_list.sort();
+    directory_list.dedup();
+    for d in directory_list.iter() {
+        println!("{d}");
     }
 }
