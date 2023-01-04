@@ -45,6 +45,7 @@ fn main() {
                 assert!(command_suffix.is_empty());
             }
         } else {
+            //if it's not a command, it must be output
             let output_split: Vec<&str> = line.split_whitespace().collect();
             if output_split[0] == "dir" {
                 directory_list.push(current_working_directory.clone() + "/" + output_split[1]);
@@ -70,7 +71,7 @@ fn main() {
             directory_sizes.insert(d.to_string(), cum_file_size);
         }
     }
-    //size of directories under 100000
+    //size of directories under 100_000
     let mut cum_rel_dir_size: u32 = 0;
     for (_dir, size) in directory_sizes.iter() {
         if size < &100_000 {
@@ -82,11 +83,11 @@ fn main() {
         cum_rel_dir_size
     );
 
-    //day2
-    day2(directory_sizes, file_list);
+    //part2
+    part2(directory_sizes, file_list);
 }
 
-fn day2(dir_sizes: HashMap<String, u32>, file_sizes: HashMap<String, u32>) -> u32 {
+fn part2(dir_sizes: HashMap<String, u32>, file_sizes: HashMap<String, u32>) -> u32 {
     //how much space do we need to clear?
     let total_disk_size = 70_000_000;
     let update_size: u32 = 30_000_000;
