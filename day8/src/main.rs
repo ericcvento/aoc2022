@@ -11,10 +11,8 @@ fn read_data() -> String {
 fn create_plane(input_text: String) -> HashMap<Coord, u32> {
     let mut plane = HashMap::new();
     for (y, line) in input_text.lines().enumerate() {
-        let mut x = 0;
-        for c in line.chars() {
-            let coord = (x, y as i32);
-            x += 1;
+        for (x, c) in line.chars().enumerate() {
+            let coord = (x as i32, y as i32);
             plane.insert(coord, c.to_digit(10).unwrap());
         }
     }
