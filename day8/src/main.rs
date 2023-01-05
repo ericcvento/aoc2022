@@ -36,7 +36,6 @@ fn create_plane(input_text: String) -> CoordPlane {
 fn count_visible_trees(plane: CoordPlane) -> i32 {
     let mut visible_tree_count = 0;
     for (coords, tree_height) in plane.clone() {
-
         let x = coords.0;
         let y = coords.1;
 
@@ -46,34 +45,34 @@ fn count_visible_trees(plane: CoordPlane) -> i32 {
         let mut hidden_down = 0;
 
         //look 'right'
-        for xx in x + 1..98 {
+        for xx in x + 1..=98 {
             if plane[&(xx, y)] >= tree_height {
                 hidden_right = 1;
                 break;
             }
         }
         //look 'left'
-        for xx in 0..x - 1 {
+        for xx in 0..x {
             if plane[&(xx, y)] >= tree_height {
                 hidden_left = 1;
                 break;
             }
         }
         //look 'up'
-        for yy in y + 1..98 {
+        for yy in y + 1..=98 {
             if plane[&(x, yy)] >= tree_height {
                 hidden_up = 1;
                 break;
             }
         }
         //look 'down'
-        for yy in 0..y - 1 {
+        for yy in 0..y {
             if plane[&(x, yy)] >= tree_height {
                 hidden_down = 1;
                 break;
             }
         }
-        let visible_tree = hidden_left+hidden_right+hidden_up+hidden_down<4; 
+        let visible_tree = hidden_left + hidden_right + hidden_up + hidden_down < 4;
         visible_tree_count += visible_tree as i32;
     }
     visible_tree_count
