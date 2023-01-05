@@ -2,20 +2,16 @@ use std::collections::HashMap;
 use std::fs;
 
 type Coord = (i32, i32);
-type CoordPlane = HashMap<Coord,u32>; 
+type CoordPlane = HashMap<Coord, u32>;
 
-fn get_max_coord (plane:CoordPlane, axis:char) -> i32 {
-    let mut max:i32=0; 
+fn get_max_coord(plane: CoordPlane, axis: char) -> i32 {
+    let mut max: i32 = 0;
     for kt in plane.keys() {
-        if axis=='x' {
-            if kt.0 > max {
-                max=kt.0; 
-            }
+        if axis == 'x' && kt.0 > max {
+            max = kt.0;
         }
-        if axis=='y' {
-            if kt.1 > max {
-                max=kt.1; 
-            }
+        if axis == 'y' && kt.1 > max {
+            max = kt.1;
         }
     }
     max
@@ -37,12 +33,16 @@ fn create_plane(input_text: String) -> CoordPlane {
     plane
 }
 
+fn count_hidden_trees(plane: CoordPlane) -> u32 {
+    let mut hidden_tree_count = 0;
+    for (coords, tree_height) in plane {
+        println!("{:?} - {}", coords, tree_height);
+    }
+    hidden_tree_count
+}
+
 fn main() {
     let input_text = read_data();
     let plane = create_plane(input_text);
-    
-    println!("{:?}",plane); 
-    println!("{}",get_max_coord(plane.clone(), 'x'));
-    println!("{}",get_max_coord(plane.clone(), 'y'));
-    
+    count_hidden_trees(plane);
 }
