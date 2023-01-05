@@ -33,16 +33,53 @@ fn create_plane(input_text: String) -> CoordPlane {
     plane
 }
 
-fn count_hidden_trees(plane: CoordPlane) -> u32 {
+fn count_hidden_trees(plane: CoordPlane) -> i32 {
     let mut hidden_tree_count = 0;
-    for (coords, tree_height) in plane {
-        println!("{:?} - {}", coords, tree_height);
-    }
+    for (coords, tree_height) in plane.clone() {
+        let x = coords.0; 
+        let y = coords.1; 
+
+        let mut hidden_left=0; 
+        let mut hidden_right=0; 
+        let mut hidden_up=0; 
+        let mut hidden_down=0; 
+        
+        //look 'right' 
+        for xx in x+1..98 { 
+            if plane[&(xx,y)]>=tree_height {
+                hidden_right=1; 
+                break; 
+            }
+        }
+        //look 'left'
+        for xx in 0..x-1 {
+            if plane[&(xx,y)]>=tree_height {
+                hidden_left=1; 
+                break;
+            }
+        }
+        //look 'up' 
+        for yy in y+1..98 { 
+            if plane[&(x,yy)]>=tree_height {
+                hidden_up=1; 
+                break;
+            }
+        }
+        //look 'down' 
+        for yy in 0..y-1 {
+            if plane[&(x,yy)]>=tree_height {
+                hidden_down=1; 
+                break; 
+            }
+        }
+        let hidden_tree=hidden_left==1 && hidden_right==1 && hidden_up==1 && hidden_down==1; 
+        hidden_tree_count+=hidden_tree as i32; 
+    }   
     hidden_tree_count
 }
 
 fn main() {
     let input_text = read_data();
     let plane = create_plane(input_text);
-    count_hidden_trees(plane);
+    println!("{}",count_hidden_trees(plane));
 }
