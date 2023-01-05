@@ -78,53 +78,61 @@ fn count_visible_trees(plane: CoordPlane) -> i32 {
     visible_tree_count
 }
 
-fn max_scenic_score(plane: CoordPlane) -> i32 {
-    let mut visible_tree_count = 0;
+fn find_max_scenic_score(plane: CoordPlane) -> i32 {
+    let mut max_scenic_score = 0;
     for (coords, tree_height) in plane.clone() {
         let x = coords.0;
         let y = coords.1;
 
-        let mut hidden_left = 0;
-        let mut hidden_right = 0;
-        let mut hidden_up = 0;
-        let mut hidden_down = 0;
+        let mut trees_left = 0;
+        let mut trees_right = 0;
+        let mut trees_up = 0;
+        let mut trees_down = 0;
 
         //look 'right'
         for xx in x + 1..=98 {
+            trees_right += 1;
             if plane[&(xx, y)] >= tree_height {
-                hidden_right = 1;
                 break;
             }
         }
         //look 'left'
-        for xx in 0..x {
+        for xx in (0..x).rev() {
+            trees_left += 1;
             if plane[&(xx, y)] >= tree_height {
-                hidden_left = 1;
                 break;
             }
         }
         //look 'up'
         for yy in y + 1..=98 {
+            trees_up += 1;
             if plane[&(x, yy)] >= tree_height {
-                hidden_up = 1;
                 break;
             }
         }
         //look 'down'
-        for yy in 0..y {
+        for yy in (0..y).rev() {
+            trees_down += 1;
             if plane[&(x, yy)] >= tree_height {
-                hidden_down = 1;
                 break;
             }
         }
-        let visible_tree = hidden_left + hidden_right + hidden_up + hidden_down < 4;
-        visible_tree_count += visible_tree as i32;
+
+        let scenic_score = trees_left * trees_right * trees_up * trees_down;
+        if scenic_score > max_scenic_score {
+            max_scenic_score = scenic_score;
+        }
     }
-    visible_tree_count
+    max_scenic_score
 }
 
 fn main() {
     let input_text = read_data();
     let plane = create_plane(input_text);
-    println!("{}", count_visible_trees(plane));
+    println!(
+        "number of visible trees:{}",
+        count_visible_trees(plane.clone())
+    );
+    //part 2
+    println!("max scenic score:{}", find_max_scenic_score(plane));
 }
