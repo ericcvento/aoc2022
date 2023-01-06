@@ -10,7 +10,7 @@ fn push_rope(moves: String) -> i32 {
     let mut tail_loc: [i32; 2] = [0, 0];
     let mut tail_loc_history = Vec::new();
 
-    for (i, l) in moves.lines().enumerate() {
+    for (_i, l) in moves.lines().enumerate() {
         let instructions: Vec<&str> = l.split_whitespace().collect();
         let direction = instructions[0];
         let moves: i32 = instructions[1].parse().unwrap();
@@ -21,10 +21,6 @@ fn push_rope(moves: String) -> i32 {
         let mut position_change: [i32; 2] = [0, 0];
         for _m in 0..moves {
             let head_tail_diff = [head_loc[0] - tail_loc[0], head_loc[1] - tail_loc[1]];
-
-            if i < 100 {
-                println!("{:?}-{:?}-{:?}", head_loc, tail_loc, head_tail_diff)
-            }
 
             let mut tail_correction = [0, 0];
             if head_tail_diff[0].abs() + head_tail_diff[1].abs() == 3 {
