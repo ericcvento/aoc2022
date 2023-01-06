@@ -6,7 +6,7 @@ fn read_data() -> String {
 }
 
 fn push_rope(moves: String) -> i32 {
-    let t_spaces = 0;
+    let tail_spaces = 0;
     let mut head_loc: [i32;2] = [0,0];
     let mut tail_loc: [i32;2] = [0,0];
 
@@ -29,8 +29,7 @@ fn push_rope(moves: String) -> i32 {
             head_loc=[head_loc[0]+position_change[0],head_loc[1]+position_change[1]]; 
         }
     }
-
-    t_spaces
+    tail_spaces
 }
 
 fn main() {
