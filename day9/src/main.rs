@@ -12,9 +12,8 @@ fn push_rope(moves: String) -> i32 {
     let mut head_loc: Coord = (0, 0);
     let mut tail_loc: Coord = (0, 0);
 
-    for l in moves.lines(){
-        println!("{}",l); 
-        
+    for l in moves.lines() {
+        println!("{}", l);
     }
 
     t_spaces
@@ -22,5 +21,5 @@ fn push_rope(moves: String) -> i32 {
 
 fn main() {
     let input_text = read_data();
-    push_rope(input_text.clone()); 
+    push_rope(input_text.clone());
 }
