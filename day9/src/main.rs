@@ -22,16 +22,28 @@ fn push_rope(moves: String) -> i32 {
         for _m in 0..moves {
             let head_tail_diff = [head_loc[0] - tail_loc[0], head_loc[1] - tail_loc[1]];
 
-            if i < 25 {
+            if i < 100 {
                 println!("{:?}-{:?}-{:?}", head_loc, tail_loc, head_tail_diff)
             }
 
             let mut tail_correction = [0, 0];
-            for c in 0..=1 {
-                if head_tail_diff[c] == 2 {
-                    tail_correction[c] = 1;
-                } else if head_tail_diff[c] == -2 {
-                    tail_correction[c] = -1;
+            if head_tail_diff[0].abs() + head_tail_diff[1].abs() == 3 {
+                for d in 0..2 {
+                    if head_tail_diff[d] > 0 {
+                        tail_correction[d] = 1
+                    }
+                    if head_tail_diff[d] < 0 {
+                        tail_correction[d] = -1
+                    }
+                }
+            } else if head_tail_diff[0].abs() + head_tail_diff[1].abs() == 2 {
+                for d in 0..2 {
+                    if head_tail_diff[d] == 2 {
+                        tail_correction[d] = 1
+                    }
+                    if head_tail_diff[d] == -2 {
+                        tail_correction[d] = -1
+                    }
                 }
             }
 
