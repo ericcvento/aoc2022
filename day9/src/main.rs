@@ -5,7 +5,7 @@ fn read_data() -> String {
     ft
 }
 
-fn push_rope(moves: String) -> i32 {
+fn push_rope_two_knots(moves: String) -> i32 {
     let mut head_loc: [i32; 2] = [0, 0];
     let mut tail_loc: [i32; 2] = [0, 0];
     let mut tail_loc_history = Vec::new();
@@ -71,8 +71,13 @@ fn push_rope(moves: String) -> i32 {
     tail_loc_history.len() as i32
 }
 
+
+fn push_rope_10_knots(moves: String) -> i32 {
+    10
+}
+
 fn main() {
     let input_text = read_data();
-    let p1_solution = push_rope(input_text);
+    let p1_solution = push_rope_two_knots(input_text);
     println!("the solution to part one is {p1_solution}");
 }
