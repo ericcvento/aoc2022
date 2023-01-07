@@ -7,7 +7,12 @@ fn read_data() -> String {
     ft
 }
 
-fn process_instructions(output: String) -> HashMap<i32, i32> {
+fn read_test_data() -> String {
+    let ft: String = fs::read_to_string(r"data\day10input_test.txt").expect("Invalid File.");
+    ft
+}
+
+fn process_instructions(output: String) -> HashMap<i32, (i32, String)> {
     //initialize register
     let mut cycle: i32 = 0;
     let mut register: i32 = 1;
@@ -21,11 +26,11 @@ fn process_instructions(output: String) -> HashMap<i32, i32> {
                 if c == 1 {
                     register += line.substring(5, line.len()).parse::<i32>().unwrap();
                 }
-                register_history.insert(cycle, register);
+                register_history.insert(cycle, (register, line.to_string()));
             }
         } else {
             cycle += 1;
-            register_history.insert(cycle, register);
+            register_history.insert(cycle, (register, line.to_string()));
         }
     }
     register_history
@@ -33,5 +38,19 @@ fn process_instructions(output: String) -> HashMap<i32, i32> {
 
 fn main() {
     let input_text = read_data();
-    process_instructions(input_text);
+
+    let input_text = read_test_data();
+    let output_history = process_instructions(input_text);
+
+    let mut part1_solution = 0;
+
+    for i in 1..=output_history.len() {
+        println!("{i}-{:?}", output_history[&(i as i32)]);
+        if (i == 20) | ((i as i32 - 20) % 40 == 0) {
+            println!("{i}");
+            part1_solution += (output_history[&(i as i32)].0) * (i as i32);
+        }
+    }
+
+    println!("the solution to part 1 is {part1_solution}");
 }
