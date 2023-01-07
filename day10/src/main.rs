@@ -36,17 +36,22 @@ fn process_instructions(output: String) -> HashMap<i32, (i32, String)> {
     register_history
 }
 
+fn draw_sprite(history: HashMap<i32, (i32, String)>) {
+    let mut screen_line: [i32; 40];
+    for i in 1..=40 {}
+}
+
 fn main() {
     let input_text = read_data();
     let output_history = process_instructions(input_text);
 
     let mut part1_solution = 0;
     for i in 1..=output_history.len() {
-        println!("{i}-{:?}", output_history[&(i as i32)]);
         if (i == 20) | ((i as i32 - 20) % 40 == 0) {
-            println!("{i}");
             part1_solution += (output_history[&(i as i32)].0) * (i as i32);
         }
     }
     println!("the solution to part 1 is {part1_solution}");
+
+    draw_sprite(output_history);
 }
