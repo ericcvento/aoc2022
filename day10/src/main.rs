@@ -8,17 +8,10 @@ fn read_data() -> String {
 
 fn process_instructions(output: String) -> i32 {
     //initialize register
-    let mut cycles: i32 = 0;
-    let mut register: i32 = 1;
-    let mut x: i32 = 0;
+    let mut cycle: i32 = 0; 
     for (_i, line) in output.lines().enumerate() {
         //parse instructions
-        if line.substring(0, 4) == "addx" {
-            //need to output register at certain cycles, add loop that takes 2 steps here; 
-            cycles += 2;
-            x += line.substring(5, line.len()).parse::<i32>().unwrap();
-        }
-        if cycles 
+        if line.substring(0, 4) == "addx" {}
     }
     1
 }
