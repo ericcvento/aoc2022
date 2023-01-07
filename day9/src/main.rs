@@ -81,71 +81,64 @@ fn push_rope_10_knots(moves: String) -> i32 {
     }
 
     //....
-    for (i, l) in moves.lines().enumerate() {
+    for (_i, l) in moves.lines().enumerate() {
         let instructions: Vec<&str> = l.split_whitespace().collect();
         let direction = instructions[0];
         let moves: i32 = instructions[1].parse().unwrap();
 
-        if i < 1000 {
-            println!("{i}-{direction}-{moves}-{:?}", knots);
-        }
-
         for _m in 0..moves {
-            for k in [1,2,3,4,5,6,7,8,9,0] {
-                if k > 0 {
-                    let diff: [i32; 2] =
-                        [knots[k - 1][0] - knots[k][0], knots[k - 1][1] - knots[k][1]];
-                    let mut tail_correction = [0, 0];
-                    if diff[0].abs() + diff[1].abs() == 3 {
-                        for d in 0..2 {
-                            if diff[d] > 0 {
-                                tail_correction[d] = 1
-                            }
-                            if diff[d] < 0 {
-                                tail_correction[d] = -1
-                            }
+            //move head
+            let mut position_change: [i32; 2] = [0, 0];
+            if direction == "U" {
+                position_change = [0, 1]
+            } else if direction == "D" {
+                position_change = [0, -1]
+            } else if direction == "L" {
+                position_change = [-1, 0]
+            } else if direction == "R" {
+                position_change = [1, 0]
+            }
+            knots[0] = [
+                knots[0][0] + position_change[0],
+                knots[0][1] + position_change[1],
+            ];
+            //do the rest of the knots
+            for k in 1..10 {
+                let diff: [i32; 2] = [knots[k - 1][0] - knots[k][0], knots[k - 1][1] - knots[k][1]];
+                let mut tail_correction = [0, 0];
+                let diff_abs = diff[0].abs() + diff[1].abs();
+                if diff_abs >= 3 {
+                    for d in 0..2 {
+                        if diff[d] > 0 {
+                            tail_correction[d] = 1
                         }
-                    } else if diff[0].abs() + diff[1].abs() == 2 {
-                        for d in 0..2 {
-                            if diff[d] == 2 {
-                                tail_correction[d] = 1
-                            }
-                            if diff[d] == -2 {
-                                tail_correction[d] = -1
-                            }
+                        if diff[d] < 0 {
+                            tail_correction[d] = -1
                         }
                     }
-
-                    knots[k] = [
-                        knots[k][0] + tail_correction[0],
-                        knots[k][1] + tail_correction[1],
-                    ];
-
-                    if k == 9 {
-                        knot_ten_history.push(knots[k]);
-                        //println!("{:?}",knot_ten_history)
+                } else if diff_abs == 2 {
+                    for d in 0..2 {
+                        if diff[d] == 2 {
+                            tail_correction[d] = 1
+                        }
+                        if diff[d] == -2 {
+                            tail_correction[d] = -1
+                        }
                     }
+                }
 
-                } else if k == 0 {
-                    //move head
-                    let mut position_change: [i32; 2] = [0, 0];
-                    if direction == "U" {
-                        position_change = [0, 1]
-                    } else if direction == "D" {
-                        position_change = [0, -1]
-                    } else if direction == "L" {
-                        position_change = [-1, 0]
-                    } else if direction == "R" {
-                        position_change = [1, 0]
-                    }
-                    knots[0] = [
-                        knots[0][0] + position_change[0],
-                        knots[0][1] + position_change[1],
-                    ];
+                knots[k] = [
+                    knots[k][0] + tail_correction[0],
+                    knots[k][1] + tail_correction[1],
+                ];
+
+                if k == 9 {
+                    knot_ten_history.push(knots[k])
                 }
             }
         }
     }
+
     knot_ten_history.sort();
     knot_ten_history.dedup();
     knot_ten_history.len() as i32
