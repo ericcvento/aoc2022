@@ -1,3 +1,10 @@
+use std::fs;
+
+fn read_data() -> String {
+    let ft: String = fs::read_to_string(r"data\day11input.txt").expect("Invalid File.");
+    ft
+}
+
 fn main() {
-    println!("Hello, world!");
+    let input_string=read_data(); 
 }
