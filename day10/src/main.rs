@@ -37,8 +37,25 @@ fn process_instructions(output: String) -> HashMap<i32, (i32, String)> {
 }
 
 fn draw_sprite(history: HashMap<i32, (i32, String)>) {
-    let mut screen_line: [i32; 40];
-    for i in 1..=40 {}
+    let mut screen_row = String::new();
+    let mut j = 1;
+    for i in 1i32..=history.len() as i32 {
+        let mut x_register = history[&i].0;
+        x_register += 1;
+
+        if (j - x_register).abs() <= 1 {
+            screen_row.push('#');
+        } else {
+            screen_row.push('.');
+        }
+        if j == 40 {
+            println!("{:?}", screen_row);
+            screen_row = "".to_string();
+            j = 1;
+            continue;
+        }
+        j += 1;
+    }
 }
 
 fn main() {
@@ -52,6 +69,5 @@ fn main() {
         }
     }
     println!("the solution to part 1 is {part1_solution}");
-
     draw_sprite(output_history);
 }
