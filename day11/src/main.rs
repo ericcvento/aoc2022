@@ -1,5 +1,14 @@
 use std::fs;
 
+struct Monkey {
+    id: i32,
+    inventory: Vec<i32>,
+    operation_str: String, 
+    test_divisor: i32, 
+    true_monkey: i32,
+    false_monkey:i32
+}
+
 fn read_data() -> String {
     let ft: String = fs::read_to_string(r"data\day11input.txt").expect("Invalid File.");
     ft
