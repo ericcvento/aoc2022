@@ -20,22 +20,6 @@ fn build_monkey(id: i32, inventory: Vec<i32>) -> Monkey {
     }
 }
 
-fn read_data() -> String {
-    let ft: String = fs::read_to_string(r"data\day11input.txt").expect("Invalid File.");
-    ft
-}
-
-fn count_monkeys(input_string: &str) -> i32 {
-    let mut monkey_n = 0;
-    for line in input_string.lines() {
-        let first_word = line.split_whitespace().nth(0);
-        if first_word == Some("Monkey") {
-            monkey_n += 1;
-        }
-    }
-    monkey_n
-}
-
 fn set_starting_inventories(input_string: &str) -> Vec<Vec<i32>> {
     let mut monkeys_items = Vec::new();
     for line in input_string.lines() {
@@ -52,13 +36,24 @@ fn set_starting_inventories(input_string: &str) -> Vec<Vec<i32>> {
     monkeys_items
 }
 
+fn count_monkeys(input_string: &str) -> i32 {
+    let mut monkey_n = 0;
+    for line in input_string.lines() {
+        let first_word = line.split_whitespace().nth(0);
+        if first_word == Some("Monkey") {
+            monkey_n += 1;
+        }
+    }
+    monkey_n
+}
+
+fn read_data() -> String {
+    let ft: String = fs::read_to_string(r"data\day11input.txt").expect("Invalid File.");
+    ft
+}
+
 fn main() {
     let input_string = read_data();
     let monkey_count = count_monkeys(&input_string);
     let inventories = set_starting_inventories(&input_string);
-    let mut monkeys: Vec<Monkey> = Vec::new();
-    for i in 0..monkey_count {
-        monkeys.push(build_monkey(i, inventories[(i as usize)].clone()));
-    }
-    println!("{:?}", monkeys[0].inventory);
 }
