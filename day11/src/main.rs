@@ -5,7 +5,7 @@ fn read_data() -> String {
     ft
 }
 
-fn count_monkeys(input_string: &String) -> i32 {
+fn count_monkeys(input_string: &str) -> i32 {
     let mut monkey_n = 0;
     for line in input_string.lines() {
         let first_word = line.split_whitespace().nth(0);
@@ -16,19 +16,21 @@ fn count_monkeys(input_string: &String) -> i32 {
     monkey_n
 }
 
-fn set_starting_inventories(input_string: &String) {
+fn set_starting_inventories(input_string: &str) -> Vec<Vec<i32>> {
+    let mut monkeys_items=Vec::new(); 
     for line in input_string.lines() {
-        let mut instruction = line.trim().split(':').collect::<Vec<&str>>(); 
-        //instruction.retain(|&x| x != ""); 
+        let instruction = line.trim().split(':').collect::<Vec<&str>>(); 
         if instruction[0]=="Starting items" {
-            println!("{:?}",instruction);
+            let items=instruction[1].split(',').collect::<Vec<&str>>(); 
+            let items_n: Vec<i32>=items.iter().map(|x| x.trim().parse::<i32>().unwrap()).collect();
+            monkeys_items.push(items_n); 
         }
     }
-
+    monkeys_items
 }
 
 fn main() {
     let input_string = read_data();
-    let monkey_n = count_monkeys(&input_string);
-    set_starting_inventories(&input_string);
+    count_monkeys(&input_string);
+    let inventories=set_starting_inventories(&input_string);
 }
