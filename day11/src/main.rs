@@ -36,6 +36,30 @@ fn set_starting_inventories(input_string: &str) -> Vec<Vec<i32>> {
     monkeys_items
 }
 
+fn parse_ops(input_string: &str) -> Vec<String> {
+    let mut ops = Vec::new();
+    for line in input_string.lines() {
+        let instruction = line.trim().split(':').collect::<Vec<&str>>();
+        if instruction[0] == "Operation" {
+            ops.push(instruction[1].trim().to_string())
+        }
+    }
+    ops
+}
+
+fn parse_divisors(input_string: &str) -> Vec<i32> {
+    let mut divisors = Vec::new();
+    for line in input_string.lines() {
+        let instruction = line.trim().split(':').collect::<Vec<&str>>();
+        if instruction[0] == "Test" {
+            let t: String = instruction[1].chars().filter(|c| c.is_digit(10)).collect();
+            let divisor = t.parse::<i32>().unwrap();
+            divisors.push(divisor); 
+        }
+    }
+    divisors
+}
+
 fn count_monkeys(input_string: &str) -> i32 {
     let mut monkey_n = 0;
     for line in input_string.lines() {
@@ -56,4 +80,9 @@ fn main() {
     let input_string = read_data();
     let monkey_count = count_monkeys(&input_string);
     let inventories = set_starting_inventories(&input_string);
+    parse_ops(&input_string);
+    parse_divisors(&input_string);
+    
+
+    for i in 0..monkey_count {}
 }
