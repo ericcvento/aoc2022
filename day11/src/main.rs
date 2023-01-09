@@ -1,22 +1,26 @@
 use std::fs;
 
 struct Monkey {
-    id: i32,
+    id: usize,
     inventory: Vec<i32>,
     operation_str: String,
     test_divisor: i32,
-    true_monkey: i32,
-    false_monkey: i32,
+    tfmonkeys: (usize, usize),
 }
 
-fn build_monkey(id: i32, inventory: Vec<i32>) -> Monkey {
+fn build_monkey(
+    id: usize,
+    inventory: Vec<i32>,
+    operation_str: String,
+    test_divisor: i32,
+    tfmonkeys: (usize, usize),
+) -> Monkey {
     Monkey {
         id,
         inventory,
-        operation_str: "".to_string(),
-        test_divisor: 0,
-        true_monkey: 99,
-        false_monkey: 99,
+        operation_str,
+        test_divisor,
+        tfmonkeys,
     }
 }
 
@@ -54,10 +58,31 @@ fn parse_divisors(input_string: &str) -> Vec<i32> {
         if instruction[0] == "Test" {
             let t: String = instruction[1].chars().filter(|c| c.is_digit(10)).collect();
             let divisor = t.parse::<i32>().unwrap();
-            divisors.push(divisor); 
+            divisors.push(divisor);
         }
     }
     divisors
+}
+
+fn parse_true_false_monkeys(input_string: &str) -> Vec<(usize, usize)> {
+    let mut tfmonkeys = Vec::new();
+    let mut tfmonkey: (usize, usize) = (0, 0);
+    for line in input_string.lines() {
+        let instruction = line.trim().split(':').collect::<Vec<&str>>();
+
+        if instruction[0] == "If true" || instruction[0] == "If false" {
+            let idnumber: String = instruction[1].chars().filter(|c| c.is_digit(10)).collect();
+            let idnumber: usize = idnumber.parse().unwrap();
+            if instruction[0] == "If true" {
+                tfmonkey.0 = idnumber;
+            } else if instruction[0] == "If false" {
+                tfmonkey.1 = idnumber;
+                tfmonkeys.push(tfmonkey);
+                tfmonkey = (0, 0);
+            }
+        }
+    }
+    tfmonkeys
 }
 
 fn count_monkeys(input_string: &str) -> i32 {
@@ -78,11 +103,19 @@ fn read_data() -> String {
 
 fn main() {
     let input_string = read_data();
-    let monkey_count = count_monkeys(&input_string);
+    let monkey_count = count_monkeys(&input_string) as usize;
     let inventories = set_starting_inventories(&input_string);
-    parse_ops(&input_string);
-    parse_divisors(&input_string);
-    
+    let ops = parse_ops(&input_string);
+    let divisors = parse_divisors(&input_string);
+    let tfmonkeys = parse_true_false_monkeys(&input_string);
 
-    for i in 0..monkey_count {}
+    for i in 0..monkey_count {
+        build_monkey(
+            i,
+            inventories[i].clone(),
+            ops[i].clone(),
+            divisors[i],
+            tfmonkeys[i],
+        );
+    }
 }
