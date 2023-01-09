@@ -57,7 +57,10 @@ fn parse_divisors(input_string: &str) -> Vec<i32> {
     for line in input_string.lines() {
         let instruction = line.trim().split(':').collect::<Vec<&str>>();
         if instruction[0] == "Test" {
-            let t: String = instruction[1].chars().filter(|c| c.is_ascii_digit()).collect();
+            let t: String = instruction[1]
+                .chars()
+                .filter(|c| c.is_ascii_digit())
+                .collect();
             let divisor = t.parse::<i32>().unwrap();
             divisors.push(divisor);
         }
@@ -72,7 +75,10 @@ fn parse_true_false_monkeys(input_string: &str) -> Vec<(usize, usize)> {
         let instruction = line.trim().split(':').collect::<Vec<&str>>();
 
         if instruction[0] == "If true" || instruction[0] == "If false" {
-            let idnumber: String = instruction[1].chars().filter(|c| c.is_ascii_digit()).collect();
+            let idnumber: String = instruction[1]
+                .chars()
+                .filter(|c| c.is_ascii_digit())
+                .collect();
             let idnumber: usize = idnumber.parse().unwrap();
             if instruction[0] == "If true" {
                 tfmonkey.0 = idnumber;
@@ -98,9 +104,8 @@ fn count_monkeys(input_string: &str) -> i32 {
 }
 
 fn game_loop(mut monkeys: Vec<Monkey>) {
-        for monkey in &mut monkeys {
+    for monkey in &mut monkeys {
         monkey.inventory.reverse();
-
         //test worry, parsing this out in a ridiculous way
         for _i in 0..monkey.inventory.len() {
             let ops: Vec<&str> = monkey.operation_str.split_whitespace().collect();
@@ -108,25 +113,25 @@ fn game_loop(mut monkeys: Vec<Monkey>) {
             assert!(ops[3] == "*" || ops[3] == "+");
 
             let old = monkey.inventory.pop().unwrap();
-            let comparator:i32 = if ops[4] == "old" {
+            let comparator: i32 = if ops[4] == "old" {
                 old
             } else {
                 ops[4].parse::<i32>().unwrap()
-            }; 
+            };
             let new: i32 = if ops[3] == "*" {
-                (old * comparator)/3
+                (old * comparator) / 3
             } else {
-                (old + comparator)/3
+                (old + comparator) / 3
             };
             println!("old:{old}, new:{new}");
 
-            let relmonkey : usize = if new % monkey.test_divisor==0 { 
+            let relmonkey: usize = if new % monkey.test_divisor == 0 {
                 monkey.tfmonkeys.0
             } else {
-                monkey.tfmonkeys.1 
+                monkey.tfmonkeys.1
             };
-            //how to edit a vec that I've already borrowed?
-            monkeys[relmonkey].inventory.push(new); 
+            //how to edit a vec I've already borrowed?
+            monkeys[relmonkey].inventory.push(new);
         }
     }
 }
@@ -154,7 +159,6 @@ fn main() {
             divisors[i],
             tfmonkeys[i],
         );
-
         monkeys.push(monkey);
     }
     game_loop(monkeys);
