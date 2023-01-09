@@ -56,7 +56,7 @@ fn parse_divisors(input_string: &str) -> Vec<i32> {
     for line in input_string.lines() {
         let instruction = line.trim().split(':').collect::<Vec<&str>>();
         if instruction[0] == "Test" {
-            let t: String = instruction[1].chars().filter(|c| c.is_digit(10)).collect();
+            let t: String = instruction[1].chars().filter(|c| c.is_ascii_digit()).collect();
             let divisor = t.parse::<i32>().unwrap();
             divisors.push(divisor);
         }
@@ -71,7 +71,7 @@ fn parse_true_false_monkeys(input_string: &str) -> Vec<(usize, usize)> {
         let instruction = line.trim().split(':').collect::<Vec<&str>>();
 
         if instruction[0] == "If true" || instruction[0] == "If false" {
-            let idnumber: String = instruction[1].chars().filter(|c| c.is_digit(10)).collect();
+            let idnumber: String = instruction[1].chars().filter(|c| c.is_ascii_digit()).collect();
             let idnumber: usize = idnumber.parse().unwrap();
             if instruction[0] == "If true" {
                 tfmonkey.0 = idnumber;
@@ -88,7 +88,7 @@ fn parse_true_false_monkeys(input_string: &str) -> Vec<(usize, usize)> {
 fn count_monkeys(input_string: &str) -> i32 {
     let mut monkey_n = 0;
     for line in input_string.lines() {
-        let first_word = line.split_whitespace().nth(0);
+        let first_word = line.split_whitespace().next();
         if first_word == Some("Monkey") {
             monkey_n += 1;
         }
@@ -100,7 +100,26 @@ fn game_loop(mut monkeys: Vec<Monkey>) {
     //
     for monkey in &mut monkeys {
         monkey.inventory.reverse();
-        println!("{}", monkey.operation_str);
+
+        //test worry, parsing this out in a ridiculous way
+        let ops: Vec<&str> = monkey.operation_str.split_whitespace().collect();
+        assert!(ops.len() == 5);
+        assert!(ops[3] == "*" || ops[3] == "+");
+
+        for _i in 0..monkey.inventory.len() {
+            let old = monkey.inventory.pop().unwrap();
+            let comparator:i32 = if ops[4] == "old" {
+                old
+            } else {
+                ops[4].parse::<i32>().unwrap()
+            }; 
+            let new: i32 = if ops[3] == "*" {
+                old * comparator
+            } else {
+                old + comparator
+            };
+            println!("old:{old}, new:{new}, operation: {:?}", ops);
+        }
     }
 }
 
