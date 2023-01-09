@@ -7,6 +7,7 @@ struct Monkey {
     operation_str: String,
     test_divisor: i32,
     tfmonkeys: (usize, usize),
+    monkey_biz: i32,
 }
 
 fn build_monkey(
@@ -22,6 +23,7 @@ fn build_monkey(
         operation_str,
         test_divisor,
         tfmonkeys,
+        monkey_biz: 0,
     }
 }
 
@@ -103,37 +105,44 @@ fn count_monkeys(input_string: &str) -> i32 {
     monkey_n
 }
 
-fn game_loop(mut monkeys: Vec<Monkey>) {
-    for monkey in &mut monkeys {
-        monkey.inventory.reverse();
-        //test worry, parsing this out in a ridiculous way
-        for _i in 0..monkey.inventory.len() {
-            let ops: Vec<&str> = monkey.operation_str.split_whitespace().collect();
+fn game_loop(mut monkeys: Vec<Monkey>) -> i32 {
+    for _round in 1..=20 {
+        for m in 0..monkeys.len() {
+            monkeys[m].inventory.reverse();
+            //test worry, parsing this out in a ridiculous way
+            let monkeys_clone = monkeys.clone();
+            let ops: Vec<&str> = monkeys_clone[m].operation_str.split_whitespace().collect();
             assert!(ops.len() == 5);
             assert!(ops[3] == "*" || ops[3] == "+");
-
-            let old = monkey.inventory.pop().unwrap();
-            let comparator: i32 = if ops[4] == "old" {
-                old
-            } else {
-                ops[4].parse::<i32>().unwrap()
-            };
-            let new: i32 = if ops[3] == "*" {
-                (old * comparator) / 3
-            } else {
-                (old + comparator) / 3
-            };
-            println!("old:{old}, new:{new}");
-
-            let relmonkey: usize = if new % monkey.test_divisor == 0 {
-                monkey.tfmonkeys.0
-            } else {
-                monkey.tfmonkeys.1
-            };
-            //how to edit a vec I've already borrowed?
-            monkeys[relmonkey].inventory.push(new);
+            for _i in 0..monkeys[m].inventory.len() {
+                let old = monkeys[m].inventory.pop().unwrap();
+                let comparator: i32 = if ops[4] == "old" {
+                    old
+                } else {
+                    ops[4].parse::<i32>().unwrap()
+                };
+                let new: i32 = if ops[3] == "*" {
+                    (old * comparator) / 3
+                } else {
+                    (old + comparator) / 3
+                };
+                let relmonkey: usize = if (new % monkeys[m].test_divisor) == 0 {
+                    monkeys[m].tfmonkeys.0
+                } else {
+                    monkeys[m].tfmonkeys.1
+                };
+                monkeys[relmonkey].inventory.push(new);
+                monkeys[m].monkey_biz += 1;
+            }
         }
     }
+    let mut monkey_biz_v: Vec<i32> = Vec::new();
+    for m in monkeys {
+        monkey_biz_v.push(m.monkey_biz);
+    }
+    monkey_biz_v.sort();
+    monkey_biz_v.reverse();
+    monkey_biz_v[0] * monkey_biz_v[1]
 }
 
 fn read_data() -> String {
@@ -152,7 +161,7 @@ fn main() {
     //load monkeys in to a vec
     let mut monkeys: Vec<Monkey> = Vec::new();
     for i in 0..monkey_count {
-        let mut monkey = build_monkey(
+        let monkey = build_monkey(
             i,
             inventories[i].clone(),
             ops[i].clone(),
@@ -161,5 +170,6 @@ fn main() {
         );
         monkeys.push(monkey);
     }
-    game_loop(monkeys);
+    let part1 = game_loop(monkeys);
+    println!("solution to part 1 is monkey Business: {part1}");
 }
