@@ -1,5 +1,6 @@
 use std::fs;
 
+#[derive(Clone, Debug)]
 struct Monkey {
     id: usize,
     inventory: Vec<i32>,
@@ -97,16 +98,15 @@ fn count_monkeys(input_string: &str) -> i32 {
 }
 
 fn game_loop(mut monkeys: Vec<Monkey>) {
-    //
-    for monkey in &mut monkeys {
+        for monkey in &mut monkeys {
         monkey.inventory.reverse();
 
         //test worry, parsing this out in a ridiculous way
-        let ops: Vec<&str> = monkey.operation_str.split_whitespace().collect();
-        assert!(ops.len() == 5);
-        assert!(ops[3] == "*" || ops[3] == "+");
-
         for _i in 0..monkey.inventory.len() {
+            let ops: Vec<&str> = monkey.operation_str.split_whitespace().collect();
+            assert!(ops.len() == 5);
+            assert!(ops[3] == "*" || ops[3] == "+");
+
             let old = monkey.inventory.pop().unwrap();
             let comparator:i32 = if ops[4] == "old" {
                 old
@@ -114,11 +114,19 @@ fn game_loop(mut monkeys: Vec<Monkey>) {
                 ops[4].parse::<i32>().unwrap()
             }; 
             let new: i32 = if ops[3] == "*" {
-                old * comparator
+                (old * comparator)/3
             } else {
-                old + comparator
+                (old + comparator)/3
             };
-            println!("old:{old}, new:{new}, operation: {:?}", ops);
+            println!("old:{old}, new:{new}");
+
+            let relmonkey : usize = if new % monkey.test_divisor==0 { 
+                monkey.tfmonkeys.0
+            } else {
+                monkey.tfmonkeys.1 
+            };
+            //how to edit a vec that I've already borrowed?
+            monkeys[relmonkey].inventory.push(new); 
         }
     }
 }
