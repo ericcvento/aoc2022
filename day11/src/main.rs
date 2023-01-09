@@ -96,6 +96,14 @@ fn count_monkeys(input_string: &str) -> i32 {
     monkey_n
 }
 
+fn game_loop(mut monkeys: Vec<Monkey>) {
+    //
+    for monkey in &mut monkeys {
+        monkey.inventory.reverse();
+        println!("{}", monkey.operation_str);
+    }
+}
+
 fn read_data() -> String {
     let ft: String = fs::read_to_string(r"data\day11input.txt").expect("Invalid File.");
     ft
@@ -109,13 +117,18 @@ fn main() {
     let divisors = parse_divisors(&input_string);
     let tfmonkeys = parse_true_false_monkeys(&input_string);
 
+    //load monkeys in to a vec
+    let mut monkeys: Vec<Monkey> = Vec::new();
     for i in 0..monkey_count {
-        build_monkey(
+        let mut monkey = build_monkey(
             i,
             inventories[i].clone(),
             ops[i].clone(),
             divisors[i],
             tfmonkeys[i],
         );
+
+        monkeys.push(monkey);
     }
+    game_loop(monkeys);
 }
