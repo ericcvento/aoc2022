@@ -103,7 +103,17 @@ fn count_monkeys(input_string: &str) -> i32 {
 }
 
 fn game_loop(mut monkeys: Vec<Monkey>) -> u128 {
+    let mut group_divisor_product: u128 = 1;
+    for (i, m) in monkeys.iter().enumerate() {
+        if i == 0 {
+            group_divisor_product = m.test_divisor;
+        } else {
+            group_divisor_product *= m.test_divisor;
+        }
+    }
+
     for round in 1..=10000 {
+        println!("Round: {round}");
         for m in 0..monkeys.len() {
             monkeys[m].inventory.reverse();
             //test worry, parsing this out in a ridiculous way
@@ -118,18 +128,21 @@ fn game_loop(mut monkeys: Vec<Monkey>) -> u128 {
                 } else {
                     ops[4].parse::<u128>().unwrap()
                 };
-
-                println!("round: {round}, {}-{}",old,comparator);
-                let new: u128 = if ops[3] == "*" {
+                let mut new: u128 = if ops[3] == "*" {
+                    //println!("{old}-{comparator}");
                     old * comparator
                 } else {
                     old + comparator
                 };
-                let relmonkey: usize = if (new % monkeys[m].test_divisor) == 0 {
+
+                let remainder: u128 = new % monkeys[m].test_divisor;
+
+                let relmonkey: usize = if remainder == 0 {
                     monkeys[m].tfmonkeys.0
                 } else {
                     monkeys[m].tfmonkeys.1
                 };
+                new %= group_divisor_product;
                 monkeys[relmonkey].inventory.push(new);
                 monkeys[m].monkey_biz += 1;
             }
@@ -169,8 +182,5 @@ fn main() {
         monkeys.push(monkey);
     }
     let part2 = game_loop(monkeys);
-    //println!("solution to part 1 is monkey Business: {part1}");
-
-    let bigone :u128 = 100_000_000_000; 
-    let bigone = bigone*bigone; 
+    println!("solution to part 2 is monkey Business: {part2}");
 }
