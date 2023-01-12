@@ -4,35 +4,27 @@ use std::fs;
 type Coordinates = (i32, i32);
 type Plane = HashMap<Coordinates, char>;
 
-fn build_grid(input_text: &str) -> (Plane,Coordinates,Coordinates) {
+fn build_grid(input_text: &str) -> (Plane, Coordinates, Coordinates) {
     let mut grid: Plane = HashMap::new();
-    let mut start: Coordinates=(0,0); 
-    let mut exit: Coordinates=(0,0); 
-    
+    let mut start: Coordinates = (0, 0);
+    let mut exit: Coordinates = (0, 0);
+
     let mut y = 0;
     for line in input_text.lines() {
         for (x, c) in line.chars().enumerate() {
-            if c=='S' {
-                start=(x as i32,y); 
-            } else if c=='E' {
-                exit=(x as i32,y as i32)
+            if c == 'S' {
+                start = (x as i32, y);
+                grid.insert((x as i32, y), 'a');
+            } else if c == 'E' {
+                exit = (x as i32, y);
+                grid.insert((x as i32, y), 'z');
+            } else {
+                grid.insert((x as i32, y), c);
             }
-            grid.insert((x as i32, y), c);
         }
         y -= 1;
     }
-    (grid,start,exit)
-}
-
-fn return_coords(c: char, grid: Plane) -> Coordinates {
-    let mut coords: Coordinates = (999, 999);
-    for (k, v) in grid {
-        if c == v {
-            coords = k;
-            break;
-        }
-    }
-    coords
+    (grid, start, exit)
 }
 
 fn return_elevation(inputchar: char) -> u32 {
@@ -54,7 +46,7 @@ fn read_data() -> String {
 fn main() {
     let input_text = read_data();
     println!("{input_text}");
-    let (the_grid,start,exit)= build_grid(&input_text);
+    let (the_grid, start, exit) = build_grid(&input_text);
 
     println!(
         "Starting here: {:?}, Need to exit the maze here: {:?}",
