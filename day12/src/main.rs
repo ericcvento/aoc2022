@@ -2,19 +2,40 @@ use std::fs;
 use std::collections::HashMap; 
 
 type Coordinates = (i32, i32);
+type Plane = HashMap<Coordinates,char>;
 
-fn build_grid(input_text:&str) -> HashMap<Coordinates,char> {
-    let mut grid = HashMap::new(); 
+fn build_grid(input_text:&str) -> Plane {
+    let mut grid: Plane = HashMap::new(); 
     let mut y = 0;
     for line in input_text.lines() {
-        let mut x = 0; 
-        for c in line.chars() {
-            grid.insert((x,y),c);
-            x+=1; 
+        for (x,c) in line.chars().enumerate() {
+            grid.insert((x as i32,y),c);
         }
         y-=1; 
     }
     grid
+}
+
+fn return_coords (c:char,grid:Plane) -> Coordinates {
+    let mut coords: Coordinates=(999,999);
+    for (k,v) in grid {
+        if c==v {
+            coords=k; 
+            break
+        }
+    }
+    coords
+}
+
+fn return_elevation(inputchar:char) -> u32 {
+    let mut elevation: u32=0; 
+       for c in "abcdefghijklmnopqrstuvwxyz".chars() {
+        elevation+=1; 
+        if inputchar==c {
+            break;
+        }
+    }
+    elevation
 }
 
 fn read_data() -> String {
@@ -25,10 +46,7 @@ fn read_data() -> String {
 fn main() {
     let input_text=read_data(); 
     println!("{input_text}");
-    let the_grid=build_grid(&input_text);
-    for (k,v) in the_grid {
-        if v=='S' {
-            println!("{:?}",k);
-        } 
-    }
+    let the_grid:Plane = build_grid(&input_text);
+    let origin: Coordinates = return_coords('S', the_grid.clone()); 
+    let exit: Coordinates = return_coords('E',the_grid.clone()); 
 }
