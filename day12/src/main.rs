@@ -4,16 +4,24 @@ use std::fs;
 type Coordinates = (i32, i32);
 type Plane = HashMap<Coordinates, char>;
 
-fn build_grid(input_text: &str) -> Plane {
+fn build_grid(input_text: &str) -> (Plane,Coordinates,Coordinates) {
     let mut grid: Plane = HashMap::new();
+    let mut start: Coordinates=(0,0); 
+    let mut exit: Coordinates=(0,0); 
+    
     let mut y = 0;
     for line in input_text.lines() {
         for (x, c) in line.chars().enumerate() {
+            if c=='S' {
+                start=(x as i32,y); 
+            } else if c=='E' {
+                exit=(x as i32,y as i32)
+            }
             grid.insert((x as i32, y), c);
         }
         y -= 1;
     }
-    grid
+    (grid,start,exit)
 }
 
 fn return_coords(c: char, grid: Plane) -> Coordinates {
@@ -46,12 +54,10 @@ fn read_data() -> String {
 fn main() {
     let input_text = read_data();
     println!("{input_text}");
-    let the_grid: Plane = build_grid(&input_text);
+    let (the_grid,start,exit)= build_grid(&input_text);
 
-    let origin: Coordinates = return_coords('S', the_grid.clone());
-    let exit: Coordinates = return_coords('E', the_grid.clone());
     println!(
         "Starting here: {:?}, Need to exit the maze here: {:?}",
-        origin, exit
+        start, exit
     );
 }
