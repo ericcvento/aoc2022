@@ -3,6 +3,7 @@ use std::fs;
 
 type Coordinates = (i32, i32);
 type Plane = HashMap<Coordinates, char>;
+type FourCoordinates = [Coordinates;4]; 
 
 fn build_grid(input_text: &str) -> (Plane, Coordinates, Coordinates) {
     let mut grid: Plane = HashMap::new();
@@ -38,13 +39,29 @@ fn return_elevation(inputchar: char) -> u32 {
     elevation
 }
 
-fn return_neighbors(loc: Coordinates) -> (Coordinates, Coordinates, Coordinates, Coordinates) {
-    (
-        (loc.0 - 1, loc.1),
-        (loc.0 + 1, loc.1),
-        (loc.0, loc.1 + 1),
-        (loc.0, loc.1 - 1),
-    )
+fn return_neighbors(loc: Coordinates) -> FourCoordinates {
+    //left, right, up, down
+    [(loc.0 - 1, loc.1),(loc.0 + 1, loc.1),(loc.0, loc.1 + 1),(loc.0, loc.1 - 1)]
+}
+
+fn check_neighbors(map:Plane, neighbors:FourCoordinates) -> HashMap<char,(Coordinates,u32)> {
+    let mut neighbor_details:HashMap<char,(Coordinates,u32)>=HashMap::new(); 
+
+    let mut i=0;
+    for c in neighbors {
+        if map.contains_key(&c) {
+            let direction = match i {
+                0=> {'L'},
+                1=> {'R'},
+                2=> {'U'},
+                3=> {'D'},
+                _=> {' '}
+            };
+            neighbor_details.insert(direction,(c,return_elevation(map[&c])));
+            i+=1; 
+        }
+    }
+    neighbor_details
 }
 
 fn read_data() -> String {
@@ -62,5 +79,5 @@ fn main() {
         start, exit
     );
 
-    return_neighbors(start);
+    check_neighbors(the_grid, return_neighbors(start)) ;
 }
