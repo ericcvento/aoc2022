@@ -39,11 +39,12 @@ fn return_elevation(inputchar: char) -> u32 {
 }
 
 fn return_neighbors(loc: Coordinates) -> (Coordinates, Coordinates, Coordinates, Coordinates) {
-    let left_coords: Coordinates = (loc.0 - 1, loc.1);
-    let right_coords: Coordinates = (loc.0 + 1, loc.1);
-    let up_coords: Coordinates = (loc.0, loc.1 + 1);
-    let down_coords: Coordinates = (loc.0, loc.1 - 1);
-    (left_coords, right_coords, up_coords, down_coords)
+    (
+        (loc.0 - 1, loc.1),
+        (loc.0 + 1, loc.1),
+        (loc.0, loc.1 + 1),
+        (loc.0, loc.1 - 1),
+    )
 }
 
 fn read_data() -> String {
