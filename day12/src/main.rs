@@ -38,6 +38,14 @@ fn return_elevation(inputchar: char) -> u32 {
     elevation
 }
 
+fn return_neighbors(loc: Coordinates) -> (Coordinates, Coordinates, Coordinates, Coordinates) {
+    let left_coords: Coordinates = (loc.0 - 1, loc.1);
+    let right_coords: Coordinates = (loc.0 + 1, loc.1);
+    let up_coords: Coordinates = (loc.0, loc.1 + 1);
+    let down_coords: Coordinates = (loc.0, loc.1 - 1);
+    (left_coords, right_coords, up_coords, down_coords)
+}
+
 fn read_data() -> String {
     let ft: String = fs::read_to_string(r"data\day12input.txt").expect("Invalid File.");
     ft
@@ -52,4 +60,6 @@ fn main() {
         "Starting here: {:?}, Need to exit the maze here: {:?}",
         start, exit
     );
+
+    return_neighbors(start);
 }
