@@ -28,7 +28,7 @@ fn build_grid(input_text: &str) -> (Plane, Coordinates, Coordinates) {
     (grid, start, exit)
 }
 
-fn return_elevation(inputchar: char) -> u32 {
+fn convert_to_elevation(inputchar: char) -> u32 {
     let mut elevation: u32 = 0;
     for c in "abcdefghijklmnopqrstuvwxyz".chars() {
         elevation += 1;
@@ -39,7 +39,11 @@ fn return_elevation(inputchar: char) -> u32 {
     elevation
 }
 
-fn return_neighbors(loc: Coordinates) -> FourCoordinates {
+fn get_elevation(loc: Coordinates, map: &Plane) -> u32 {
+    convert_to_elevation(map[&loc])
+}
+
+fn return_neighbors(loc: &Coordinates) -> FourCoordinates {
     //left, right, up, down
     [
         (loc.0 - 1, loc.1),
@@ -49,7 +53,7 @@ fn return_neighbors(loc: Coordinates) -> FourCoordinates {
     ]
 }
 
-fn check_neighbors(map: Plane, neighbors: FourCoordinates) -> HashMap<char, (Coordinates, u32)> {
+fn check_neighbors(map: &Plane, neighbors: FourCoordinates) -> HashMap<char, (Coordinates, u32)> {
     let mut neighbor_details: HashMap<char, (Coordinates, u32)> = HashMap::new();
 
     let mut i = 0;
@@ -62,9 +66,9 @@ fn check_neighbors(map: Plane, neighbors: FourCoordinates) -> HashMap<char, (Coo
                 3 => 'D',
                 _ => ' ',
             };
-            neighbor_details.insert(direction, (c, return_elevation(map[&c])));
-            i += 1;
+            neighbor_details.insert(direction, (c, convert_to_elevation(map[&c])));
         }
+        i += 1;
     }
     neighbor_details
 }
@@ -78,11 +82,31 @@ fn main() {
     let input_text = read_data();
     println!("{input_text}");
     let (the_grid, start, exit) = build_grid(&input_text);
-
     println!(
         "Starting here: {:?}, Need to exit the maze here: {:?}",
         start, exit
     );
 
-    check_neighbors(the_grid, return_neighbors(start));
+    let mut routes:Vec<Vec<Coordinates>>=Vec::new(); 
+    routes.push(vec!(start)); 
+    let mut routes_n=routes.len(); 
+
+    let mut current_route=Vec::new(); 
+
+    for maini in 0..1_000 {
+        for i in 0..routes_n {
+            current_route=routes[i].clone(); 
+            let current_loc=current_route.last().unwrap();
+            let neighbors = return_neighbors(current_loc); 
+
+
+
+            if false {
+                routes.push(current_route); 
+            }
+        }
+        
+        routes_n=routes.len(); 
+        println!("{maini}-{routes_n}"); 
+    }
 }
