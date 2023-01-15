@@ -1,7 +1,7 @@
 use std::collections::HashMap;
 use std::fs;
 
-type Coordinates = (i32, i32);
+type Coordinates = (i16, i16);
 type Plane = HashMap<Coordinates, char>;
 type FourCoordinates = [Coordinates; 4];
 
@@ -14,13 +14,13 @@ fn build_grid(input_text: &str) -> (Plane, Coordinates, Coordinates) {
     for line in input_text.lines() {
         for (x, c) in line.chars().enumerate() {
             if c == 'S' {
-                start = (x as i32, y);
-                grid.insert((x as i32, y), 'a');
+                start = (x as i16, y);
+                grid.insert((x as i16, y), 'a');
             } else if c == 'E' {
-                exit = (x as i32, y);
-                grid.insert((x as i32, y), 'z');
+                exit = (x as i16, y);
+                grid.insert((x as i16, y), 'z');
             } else {
-                grid.insert((x as i32, y), c);
+                grid.insert((x as i16, y), c);
             }
         }
         y -= 1;
@@ -86,10 +86,16 @@ fn main() {
     );
 
     //initialize vars
-    let mut exit_routes: Vec<Vec<Coordinates>> = Vec::new();
     let mut routes: Vec<Vec<Coordinates>> = Vec::new();
     routes.push(vec![start]);
     let mut routes_n = routes.len();
+
+    //keep track of visited coordinates
+    let mut visited_coords = Vec::new();
+    visited_coords.push(start);
+
+    //routes that end with the exit coordinates
+    let mut exit_routes: Vec<Vec<Coordinates>> = Vec::new();
 
     let mut maini = 1;
     while routes_n > 0 {
@@ -99,12 +105,17 @@ fn main() {
             let current_loc = current_route.pop().unwrap();
             let neighbors = return_neighbors(&current_loc);
             let neighbors = check_neighbors(&the_grid, neighbors);
-            'look: for k in neighbors.keys() {
+            for k in neighbors.keys() {
                 if neighbors[k].1 - get_elevation(current_loc, &the_grid) <= 1 {
                     let add_loc = neighbors[k].0;
-                    if Some(add_loc) == current_route.last().copied() {
-                        continue 'look;
+                    //do not double back
+                    if visited_coords.contains(&add_loc) {
+                        continue;
                     }
+                    if add_loc != exit {
+                        visited_coords.push(add_loc);
+                    }
+
                     current_route.push(current_loc);
                     current_route.push(add_loc);
                     add_routes.push(current_route.clone());
@@ -113,18 +124,22 @@ fn main() {
                 }
             }
         }
-
+        assert!(routes.is_empty());
         for _ar_i in 0..add_routes.len() {
             let check_route = add_routes.pop().unwrap();
             if check_route.last() == Some(&exit) {
                 exit_routes.push(check_route);
-                println!("Found {} routes that end in the exit!", exit_routes.len());
+                println!(
+                    "Loop: {maini},  Found {} routes that end in the exit!",
+                    exit_routes.len()
+                );
             } else {
                 routes.push(check_route);
             }
         }
         routes_n = routes.len();
-        println!("{routes_n} Routes at the end of Loop: {maini}");
+        visited_coords.sort();
+        visited_coords.dedup();
         maini += 1;
     }
 }
