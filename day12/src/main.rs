@@ -93,10 +93,9 @@ fn main() {
 
     let mut current_route = Vec::new();
 
-    for maini in 0..100 {
+    for maini in 0..5 {
         let mut add_routes = Vec::new();
         for i in 0..routes_n {
-            add_routes = Vec::new();
             current_route = routes.pop().unwrap();
             let current_loc = current_route.pop().unwrap();
             let neighbors = return_neighbors(&current_loc);
