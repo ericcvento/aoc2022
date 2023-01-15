@@ -56,8 +56,7 @@ fn return_neighbors(loc: &Coordinates) -> FourCoordinates {
 fn check_neighbors(map: &Plane, neighbors: FourCoordinates) -> HashMap<char, (Coordinates, i32)> {
     let mut neighbor_details: HashMap<char, (Coordinates, i32)> = HashMap::new();
 
-    let mut i = 0;
-    for c in neighbors {
+    for (i, c) in neighbors.into_iter().enumerate() {
         if map.contains_key(&c) {
             let direction = match i {
                 0 => 'L',
@@ -68,7 +67,6 @@ fn check_neighbors(map: &Plane, neighbors: FourCoordinates) -> HashMap<char, (Co
             };
             neighbor_details.insert(direction, (c, convert_to_elevation(map[&c])));
         }
-        i += 1;
     }
     neighbor_details
 }
@@ -87,21 +85,22 @@ fn main() {
         start, exit
     );
 
+    //initialize vars
+    let mut exit_routes: Vec<Vec<Coordinates>> = Vec::new();
     let mut routes: Vec<Vec<Coordinates>> = Vec::new();
     routes.push(vec![start]);
     let mut routes_n = routes.len();
 
-    let mut current_route = Vec::new();
-
-    for maini in 0..5 {
+    let mut maini = 1;
+    while routes_n > 0 {
         let mut add_routes = Vec::new();
-        for i in 0..routes_n {
-            current_route = routes.pop().unwrap();
+        for _i in 0..routes_n {
+            let mut current_route = routes.pop().unwrap();
             let current_loc = current_route.pop().unwrap();
             let neighbors = return_neighbors(&current_loc);
             let neighbors = check_neighbors(&the_grid, neighbors);
             'look: for k in neighbors.keys() {
-                if neighbors[k].1 - get_elevation(current_loc.clone(), &the_grid) <= 1 {
+                if neighbors[k].1 - get_elevation(current_loc, &the_grid) <= 1 {
                     let add_loc = neighbors[k].0;
                     if Some(add_loc) == current_route.last().copied() {
                         continue 'look;
@@ -114,11 +113,18 @@ fn main() {
                 }
             }
         }
-        routes.extend(add_routes);
-        routes_n = routes.len();
-        println!("{maini}-{routes_n}");
-        for r in &routes {
-            println!("{:?}", r);
+
+        for _ar_i in 0..add_routes.len() {
+            let check_route = add_routes.pop().unwrap();
+            if check_route.last() == Some(&exit) {
+                exit_routes.push(check_route);
+                println!("Found {} routes that end in the exit!", exit_routes.len());
+            } else {
+                routes.push(check_route);
+            }
         }
+        routes_n = routes.len();
+        println!("{routes_n} Routes at the end of Loop: {maini}");
+        maini += 1;
     }
 }
