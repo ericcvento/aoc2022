@@ -87,26 +87,24 @@ fn main() {
         start, exit
     );
 
-    let mut routes:Vec<Vec<Coordinates>>=Vec::new(); 
-    routes.push(vec!(start)); 
-    let mut routes_n=routes.len(); 
+    let mut routes: Vec<Vec<Coordinates>> = Vec::new();
+    routes.push(vec![start]);
+    let mut routes_n = routes.len();
 
-    let mut current_route=Vec::new(); 
+    let mut current_route = Vec::new();
 
     for maini in 0..1_000 {
         for i in 0..routes_n {
-            current_route=routes[i].clone(); 
-            let current_loc=current_route.last().unwrap();
-            let neighbors = return_neighbors(current_loc); 
-
-
+            current_route = routes[i].clone();
+            let current_loc = current_route.last().unwrap();
+            let neighbors = return_neighbors(current_loc);
 
             if false {
-                routes.push(current_route); 
+                routes.push(current_route);
             }
         }
-        
-        routes_n=routes.len(); 
-        println!("{maini}-{routes_n}"); 
+
+        routes_n = routes.len();
+        println!("{maini}-{routes_n}");
     }
 }
