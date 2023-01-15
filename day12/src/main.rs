@@ -94,32 +94,32 @@ fn main() {
     let mut current_route = Vec::new();
 
     for maini in 0..100 {
-        let mut add_routes=Vec::new(); 
+        let mut add_routes = Vec::new();
         for i in 0..routes_n {
-            add_routes=Vec::new(); 
-            current_route = routes.pop().unwrap(); 
+            add_routes = Vec::new();
+            current_route = routes.pop().unwrap();
             let current_loc = current_route.pop().unwrap();
             let neighbors = return_neighbors(&current_loc);
-            let neighbors=check_neighbors(&the_grid, neighbors); 
-            'look: for k in neighbors.keys(){
-                if neighbors[k].1-get_elevation(current_loc.clone(),&the_grid) <=1 {
-                    let add_loc=neighbors[k].0; 
+            let neighbors = check_neighbors(&the_grid, neighbors);
+            'look: for k in neighbors.keys() {
+                if neighbors[k].1 - get_elevation(current_loc.clone(), &the_grid) <= 1 {
+                    let add_loc = neighbors[k].0;
                     if Some(add_loc) == current_route.last().copied() {
                         continue 'look;
                     }
-                    current_route.push(current_loc); 
+                    current_route.push(current_loc);
                     current_route.push(add_loc);
                     add_routes.push(current_route.clone());
-                    current_route.pop(); 
-                    current_route.pop();   
+                    current_route.pop();
+                    current_route.pop();
                 }
             }
         }
-        routes.extend(add_routes); 
+        routes.extend(add_routes);
         routes_n = routes.len();
         println!("{maini}-{routes_n}");
         for r in &routes {
-            println!("{:?}",r); 
+            println!("{:?}", r);
         }
     }
 }
