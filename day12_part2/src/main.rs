@@ -76,70 +76,85 @@ fn read_data() -> String {
     ft
 }
 
+fn find_as(map: &Plane) -> Vec<Coordinates> {
+    let mut all_as: Vec<Coordinates> = Vec::new();
+    for (k, v) in map {
+        if v == &'a' {
+            all_as.push(*k);
+        }
+    }
+    all_as.sort();
+    all_as.dedup();
+    all_as
+}
+
 fn main() {
     let input_text = read_data();
     println!("{input_text}");
-    let (the_grid, start, exit) = build_grid(&input_text);
-    println!(
-        "Starting here: {:?}, Need to exit the maze here: {:?}",
-        start, exit
-    );
+    let (the_grid, _start, exit) = build_grid(&input_text);
 
-    //initialize vars
-    let mut routes: Vec<Vec<Coordinates>> = Vec::new();
-    routes.push(vec![start]);
-    let mut routes_n = routes.len();
+    let mut steps_from_a: Vec<i32> = Vec::new();
+    for start in find_as(&the_grid) {
+        //initialize vars
+        let mut routes: Vec<Vec<Coordinates>> = Vec::new();
+        routes.push(vec![start]);
+        let mut routes_n = routes.len();
 
-    //keep track of visited coordinates
-    let mut visited_coords = Vec::new();
-    visited_coords.push(start);
+        //keep track of visited coordinates
+        let mut visited_coords = Vec::new();
+        visited_coords.push(start);
 
-    //routes that end with the exit coordinates
-    let mut exit_routes: Vec<Vec<Coordinates>> = Vec::new();
+        //routes that end with the exit coordinates
+        let mut exit_routes: Vec<Vec<Coordinates>> = Vec::new();
 
-    let mut maini = 1;
-    while routes_n > 0 {
-        let mut add_routes = Vec::new();
-        for _i in 0..routes_n {
-            let mut current_route = routes.pop().unwrap();
-            let current_loc = current_route.pop().unwrap();
-            let neighbors = return_neighbors(&current_loc);
-            let neighbors = check_neighbors(&the_grid, neighbors);
-            for k in neighbors.keys() {
-                if neighbors[k].1 - get_elevation(current_loc, &the_grid) <= 1 {
-                    let add_loc = neighbors[k].0;
-                    //do not double back
-                    if visited_coords.contains(&add_loc) {
-                        continue;
+        let mut maini = 1;
+        while routes_n > 0 {
+            let mut add_routes = Vec::new();
+            for _i in 0..routes_n {
+                let mut current_route = routes.pop().unwrap();
+                let current_loc = current_route.pop().unwrap();
+                let neighbors = return_neighbors(&current_loc);
+                let neighbors = check_neighbors(&the_grid, neighbors);
+                for k in neighbors.keys() {
+                    if neighbors[k].1 - get_elevation(current_loc, &the_grid) <= 1 {
+                        let add_loc = neighbors[k].0;
+                        //do not double back
+                        if visited_coords.contains(&add_loc) {
+                            continue;
+                        }
+                        if add_loc != exit {
+                            visited_coords.push(add_loc);
+                        }
+
+                        current_route.push(current_loc);
+                        current_route.push(add_loc);
+                        add_routes.push(current_route.clone());
+                        current_route.pop();
+                        current_route.pop();
                     }
-                    if add_loc != exit {
-                        visited_coords.push(add_loc);
-                    }
-
-                    current_route.push(current_loc);
-                    current_route.push(add_loc);
-                    add_routes.push(current_route.clone());
-                    current_route.pop();
-                    current_route.pop();
                 }
             }
-        }
-        assert!(routes.is_empty());
-        for _ar_i in 0..add_routes.len() {
-            let check_route = add_routes.pop().unwrap();
-            if check_route.last() == Some(&exit) {
-                exit_routes.push(check_route);
-                println!(
-                    "Loop: {maini},  Found {} routes that end in the exit!",
-                    exit_routes.len()
-                );
-            } else {
-                routes.push(check_route);
+            assert!(routes.is_empty());
+            for _ar_i in 0..add_routes.len() {
+                let check_route = add_routes.pop().unwrap();
+                if check_route.last() == Some(&exit) {
+                    exit_routes.push(check_route);
+                    println!(
+                        "Loop: {maini},  Found {} routes that end in the exit!",
+                        exit_routes.len()
+                    );
+                    steps_from_a.push(maini);
+                } else {
+                    routes.push(check_route);
+                }
             }
+            routes_n = routes.len();
+            visited_coords.sort();
+            visited_coords.dedup();
+            maini += 1;
         }
-        routes_n = routes.len();
-        visited_coords.sort();
-        visited_coords.dedup();
-        maini += 1;
     }
+
+    steps_from_a.sort();
+    println!("Shortest steps from an A: {}", steps_from_a[0]);
 }
