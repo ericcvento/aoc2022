@@ -27,7 +27,7 @@ fn read_int_list(input: &str) -> IResult<&str, Vec<&str>> {
 }
 
 fn parse_int_list(input: &str) -> IResult<&str, Vec<&str>> {
-    let mut remaining = input; 
+    let mut remaining = input;
     let (remaining, _) = parse_open_bracket(remaining)?;
     let (remaining, ints) = read_int_list(remaining)?;
     let (remaining, _) = parse_closed_bracket(remaining)?;
@@ -39,12 +39,12 @@ fn main() {
     for l in input_text.lines() {
         println!("{l}");
         if l.is_empty() {
-            continue; 
+            continue;
         }
-        let lk=parse_int_list(l);
+        let lk = parse_int_list(l);
         match lk {
-            Ok(v)=>println!("Parsed!: {:?}",v),
-            Err(e)=>println!("More to do: {:?}",e)
-        }; 
+            Ok(v) => println!("Parsed!: {:?}", v),
+            Err(e) => println!("More to do: {:?}", e),
+        };
     }
 }
