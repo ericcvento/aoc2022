@@ -1,3 +1,4 @@
+use nom::branch::alt;
 use nom::bytes::complete::is_a;
 use nom::bytes::complete::tag;
 use nom::multi::separated_list0;
@@ -26,7 +27,8 @@ fn read_int_list(input: &str) -> IResult<&str, Vec<&str>> {
 }
 
 fn parse_int_list(input: &str) -> IResult<&str, Vec<&str>> {
-    let (remaining, _) = parse_open_bracket(input)?;
+    let mut remaining = input; 
+    let (remaining, _) = parse_open_bracket(remaining)?;
     let (remaining, ints) = read_int_list(remaining)?;
     let (remaining, _) = parse_closed_bracket(remaining)?;
     Ok((remaining, ints))
@@ -36,6 +38,13 @@ fn main() {
     let input_text = read_data();
     for l in input_text.lines() {
         println!("{l}");
-        println!("{:?}", parse_int_list(l));
+        if l.is_empty() {
+            continue; 
+        }
+        let lk=parse_int_list(l);
+        match lk {
+            Ok(v)=>println!("Parsed!: {:?}",v),
+            Err(e)=>println!("More to do: {:?}",e)
+        }; 
     }
 }
