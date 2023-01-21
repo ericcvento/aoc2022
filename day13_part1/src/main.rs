@@ -26,11 +26,10 @@ fn read_int_list(input: &str) -> IResult<&str, Vec<&str>> {
 }
 
 fn parse_int_list(input: &str) -> IResult<&str, Vec<&str>> {
-    let remaining = input;
+    let mut remaining = input;
     let (remaining, _) = parse_open_bracket(remaining)?;
     let (remaining, ints) = read_int_list(remaining)?;
     let (remaining, _) = parse_closed_bracket(remaining)?;
-    println!("all steps");
     Ok((remaining, ints))
 }
 
@@ -41,7 +40,14 @@ fn main() {
         if l.is_empty() {
             continue;
         }
-        let lk = parse_int_list(l);
+
+        //remove bracket from double bracket; 
+        let mut remaining=l; 
+        while &remaining[0..2]=="[[" {
+            (remaining,_)=parse_open_bracket(remaining).unwrap() 
+        }
+
+        let lk = parse_int_list(remaining);
         match lk {
             Ok(v) => println!("Parsed!: {:?}", v),
             Err(e) => println!("More to do: {:?}", e),
