@@ -8,7 +8,7 @@ use std::fs;
 #[derive(Debug)]
 enum ElementKind {
     Int(i32),
-    IntList(Vec<i32>),
+    IntList(Vec<ElementKind>),
 }
 
 fn read_data() -> String {
@@ -24,25 +24,21 @@ fn parse_closed_bracket(input: &str) -> IResult<&str, &str> {
     tag("]")(input)
 }
 
-fn recognize_int(input: &str) -> IResult<&str, i32> {
+fn recognize_int(input: &str) -> IResult<&str, ElementKind> {
     let (rem, number) = is_a("12345678910")(input)?;
-    Ok((rem, number.parse::<i32>().unwrap()))
+    Ok((rem, ElementKind::Int(number.parse::<i32>().unwrap())))
 }
 
-//I think I want this function to return an ElementKind (either a Vec<i32> or i32).
-//separated_list returns a Vec<_>,
-//recognize_int returns an i32,
-//what should parse_int_list return?
-fn read_element_list(input: &str) -> IResult<&str, ElementKind> {
+fn read_element_list(input: &str) -> IResult<&str, Vec<ElementKind>> {
     separated_list0(tag(","), alt((recognize_int, parse_int_list)))(input)
 }
 
 fn parse_int_list(input: &str) -> IResult<&str, ElementKind> {
-    let mut remaining = input;
+    let remaining = input;
     let (remaining, _) = parse_open_bracket(remaining)?;
-    let (remaining, ints) = read_int_list(remaining)?;
+    let (remaining, ints) = read_element_list(remaining)?;
     let (remaining, _) = parse_closed_bracket(remaining)?;
-    Ok((remaining, ints))
+    Ok((remaining, ElementKind::IntList(ints)))
 }
 
 fn main() {
@@ -52,7 +48,6 @@ fn main() {
         if l.is_empty() {
             continue;
         }
-
         println!("{:?}", parse_int_list(l))
     }
 }
