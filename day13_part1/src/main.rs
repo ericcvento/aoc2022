@@ -1,7 +1,7 @@
+use nom::branch::alt;
 use nom::bytes::complete::is_a;
 use nom::bytes::complete::tag;
 use nom::multi::separated_list0;
-use nom::branch::alt; 
 use nom::IResult;
 use std::fs;
 
@@ -22,14 +22,14 @@ fn recognize_int(input: &str) -> IResult<&str, &str> {
     is_a("12345678910")(input)
 }
 
-fn read_int_list(input: &str) {
-    let lk = separated_list0(tag(","), alt((recognize_int))(input)
+fn read_int_list(input: &str) -> IResult<&str, Vec<&str>> {
+    separated_list0(tag(","), alt((recognize_int, parse_int_list)))(input)
 }
 
-fn parse_int_list(input: &str) -> IResult<&str, Vec<&str>> {
+fn parse_int_list(input: &str) -> IResult<&str, &str> {
     let mut remaining = input;
     let (remaining, _) = parse_open_bracket(remaining)?;
-    ///let (remaining, ints) = read_int_list(remaining)?;
+    let (remaining, ints) = read_int_list(remaining)?;
     let (remaining, _) = parse_closed_bracket(remaining)?;
     Ok((remaining, ints))
 }
@@ -41,5 +41,7 @@ fn main() {
         if l.is_empty() {
             continue;
         }
+
+        println!("{:?}", parse_int_list(l))
     }
 }
