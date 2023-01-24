@@ -41,22 +41,20 @@ fn parse_int_list(input: &str) -> IResult<&str, ElementKind> {
     Ok((remaining, ElementKind::List(ints)))
 }
 
-fn unwind_element_kind(
-    input: ElementKind,
-    mut group: i32,
-    ints: &mut Vec<(i32, i32)>,
-) -> Vec<(i32, i32)> {
+fn unwind_element_kind(input: ElementKind, ints: &mut Vec<Vec<i32>>) -> Vec<Vec<i32>> {
+    let mut first: Vec<i32> = Vec::new();
     match input {
         ElementKind::List(items) => {
             for item in items {
-                println!("{:?}",item);
-                group+=1; 
-                unwind_element_kind(item,group, ints);
+                if let ElementKind::Int(int) = item {
+                    first.push(int);
+                } else if let ElementKind::List(item2) = item {
+                    unwind_element_kind(ElementKind::List(item2), ints);
+                }
             }
+            ints.push(first);
         }
-        ElementKind::Int(int) => {
-            ints.push((group, int));
-        }
+        ElementKind::Int(_int) => {}
     }
     ints.to_vec()
 }
@@ -69,9 +67,12 @@ fn main() {
             continue;
         }
         let (_, parsed) = parse_int_list(l).unwrap();
-        println!("{:?}", parsed);
 
-        let lk: &mut Vec<(i32, i32)> = &mut Vec::new();
-        println!("{:?}", unwind_element_kind(parsed, 0, lk));
+        let starter: &mut Vec<Vec<i32>> = &mut Vec::new();
+        let end = unwind_element_kind(parsed, starter);
+        println!("end:{:?}", end);
+        for v in end {
+            println!("{:?}", v);
+        }
     }
 }
