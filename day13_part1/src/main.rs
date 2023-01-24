@@ -41,15 +41,20 @@ fn parse_int_list(input: &str) -> IResult<&str, ElementKind> {
     Ok((remaining, ElementKind::List(ints)))
 }
 
-fn unwind_element_kind(input: ElementKind, ints: &mut Vec<i32>) -> Vec<i32> {
+fn unwind_element_kind(
+    input: ElementKind,
+    group: i32,
+    ints: &mut Vec<(i32, i32)>,
+) -> Vec<(i32, i32)> {
     match input {
         ElementKind::List(items) => {
             for item in items {
-                unwind_element_kind(item, ints);
+                unwind_element_kind(item, group + 1, ints);
             }
         }
         ElementKind::Int(int) => {
-            ints.push(int);
+            println!("{group}---{int}");
+            ints.push((group, int));
         }
     }
     ints.to_vec()
@@ -63,8 +68,9 @@ fn main() {
             continue;
         }
         let (_, parsed) = parse_int_list(l).unwrap();
+        println!("{:?}", parsed);
 
-        let lk: &mut Vec<i32> = &mut Vec::new();
-        println!("{:?}", unwind_element_kind(parsed, lk));
+        let lk: &mut Vec<(i32, i32)> = &mut Vec::new();
+        println!("{:?}", unwind_element_kind(parsed, 0, lk));
     }
 }
