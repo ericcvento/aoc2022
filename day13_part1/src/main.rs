@@ -43,17 +43,18 @@ fn parse_int_list(input: &str) -> IResult<&str, ElementKind> {
 
 fn unwind_element_kind(
     input: ElementKind,
-    group: i32,
+    mut group: i32,
     ints: &mut Vec<(i32, i32)>,
 ) -> Vec<(i32, i32)> {
     match input {
         ElementKind::List(items) => {
             for item in items {
-                unwind_element_kind(item, group + 1, ints);
+                println!("{:?}",item);
+                group+=1; 
+                unwind_element_kind(item,group, ints);
             }
         }
         ElementKind::Int(int) => {
-            println!("{group}---{int}");
             ints.push((group, int));
         }
     }
