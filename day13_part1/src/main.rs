@@ -63,5 +63,6 @@ fn main() {
             continue;
         }
         let (_, parsed) = parse_int_list(l).unwrap();
+        println!("{:?}", parsed);
     }
 }
