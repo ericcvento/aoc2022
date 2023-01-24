@@ -5,10 +5,10 @@ use nom::multi::separated_list0;
 use nom::IResult;
 use std::fs;
 
-#[derive(Debug)]
+#[derive(Debug, Clone)]
 enum ElementKind {
     Int(i32),
-    IntList(Vec<ElementKind>),
+    List(Vec<ElementKind>),
 }
 
 fn read_data() -> String {
@@ -38,7 +38,21 @@ fn parse_int_list(input: &str) -> IResult<&str, ElementKind> {
     let (remaining, _) = parse_open_bracket(remaining)?;
     let (remaining, ints) = read_element_list(remaining)?;
     let (remaining, _) = parse_closed_bracket(remaining)?;
-    Ok((remaining, ElementKind::IntList(ints)))
+    Ok((remaining, ElementKind::List(ints)))
+}
+
+fn unwind_element_kind(input: ElementKind, ints: &mut Vec<i32>) -> Vec<i32> {
+    match input {
+        ElementKind::List(items) => {
+            for item in items {
+                unwind_element_kind(item, ints);
+            }
+        }
+        ElementKind::Int(int) => {
+            ints.push(int);
+        }
+    }
+    ints.to_vec()
 }
 
 fn main() {
@@ -48,6 +62,9 @@ fn main() {
         if l.is_empty() {
             continue;
         }
-        println!("{:?}", parse_int_list(l))
+        let (_, parsed) = parse_int_list(l).unwrap();
+
+        let lk: &mut Vec<i32> = &mut Vec::new();
+        println!("{:?}", unwind_element_kind(parsed, lk));
     }
 }
