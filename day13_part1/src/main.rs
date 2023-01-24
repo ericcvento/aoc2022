@@ -42,19 +42,15 @@ fn parse_int_list(input: &str) -> IResult<&str, ElementKind> {
 }
 
 fn unwind_element_kind(input: ElementKind, ints: &mut Vec<Vec<i32>>) -> Vec<Vec<i32>> {
-    let mut first: Vec<i32> = Vec::new();
-    match input {
-        ElementKind::List(items) => {
-            for item in items {
-                if let ElementKind::Int(int) = item {
-                    first.push(int);
-                } else if let ElementKind::List(item2) = item {
-                    unwind_element_kind(ElementKind::List(item2), ints);
-                }
+    if let ElementKind::List(items) = input {
+        for item in items {
+            if let ElementKind::List(item2) = item {
+                println!("break");
+                unwind_element_kind(ElementKind::List(item2), ints);
+            } else if let ElementKind::Int(int) = item {
+                println!("{int}");
             }
-            ints.push(first);
         }
-        ElementKind::Int(_int) => {}
     }
     ints.to_vec()
 }
@@ -67,12 +63,5 @@ fn main() {
             continue;
         }
         let (_, parsed) = parse_int_list(l).unwrap();
-
-        let starter: &mut Vec<Vec<i32>> = &mut Vec::new();
-        let end = unwind_element_kind(parsed, starter);
-        println!("end:{:?}", end);
-        for v in end {
-            println!("{:?}", v);
-        }
     }
 }
