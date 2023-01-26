@@ -41,35 +41,56 @@ fn parse_int_list(input: &str) -> IResult<&str, ElementKind> {
     Ok((remaining, ElementKind::List(ints)))
 }
 
-fn step_through_elementkind(input: ElementKind, output: &mut Vec<i32>) -> Vec<i32> {
+fn step_through_elementkind(input: ElementKind, intermediate: &mut Vec<i32>) -> Vec<i32> {
     if let ElementKind::List(items) = input {
         for item in items {
             match item {
                 ElementKind::List(recall) => {
-                    step_through_elementkind(ElementKind::List(recall), output);
+                    step_through_elementkind(ElementKind::List(recall), intermediate);
                 }
                 ElementKind::Int(int) => {
-                    output.push(int);
+                    intermediate.push(int);
                 }
             }
         }
     }
-    output.to_vec()
+    intermediate.to_vec()
 }
 
 fn main() {
     let input_text = read_data();
     let mut i = 1;
+    let mut j: i32 = 1;
+    let mut score: i32 = 0;
+    let mut left_ints = Vec::new();
+
     for l in input_text.lines() {
-        println!("{l}");
         if l.is_empty() {
             i = 1;
             continue;
         }
+        println!("{i}: {l}");
+        if i == 1 {
+            left_ints = step_through_elementkind(parse_int_list(l).unwrap().1, &mut Vec::new());
+        }
+        if i == 2 {
+            let right_ints =
+                step_through_elementkind(parse_int_list(l).unwrap().1, &mut Vec::new());
 
-        let mut left_e: Vec<i32> = Vec::new();
-        let left_list = step_through_elementkind(parse_int_list(l).unwrap().1, &mut left_e);
-        println!("{:?}", left_list);
+            j += 1;
+
+            if left_ints.len() > right_ints.len() {
+                continue;
+            }
+            for index in 0..left_ints.len() {
+                println!("{}-{}", left_ints[index], right_ints[index]);
+                if left_ints[index] > right_ints[index] {
+                    continue;
+                }
+            }
+            score += j;
+        }
         i += 1;
     }
+    println!("{score}");
 }
