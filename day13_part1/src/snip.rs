@@ -15,3 +15,20 @@ fn return_pairs(output:String) -> Vec<(String,String)> {
     }
     pairs
 }
+
+fn compare_left_right(left: &ElementKind, right: &ElementKind) {
+    if let ElementKind::List(left_items)=left {
+        let left_length=left_items.len(); 
+        println!("{}",left_length);
+        for i in left_items {
+            println!("{:?}",i); 
+        } 
+    }
+    if let ElementKind::List(right_items)=right {
+        let right_length=right_items.len(); 
+        println!("{}",right_length); 
+        for i in right_items {
+            println!("{:?}",i); 
+        } 
+    }
+}

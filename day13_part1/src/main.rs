@@ -41,31 +41,35 @@ fn parse_int_list(input: &str) -> IResult<&str, ElementKind> {
     Ok((remaining, ElementKind::List(ints)))
 }
 
-fn compare_left_right(left: &ElementKind, right: &ElementKind) {
-    println!("Left: {:?}", left);
-    println!("Right: {:?}", right);
+fn step_through_elementkind(input: ElementKind, output: &mut Vec<i32>) -> Vec<i32> {
+    if let ElementKind::List(items) = input {
+        for item in items {
+            match item {
+                ElementKind::List(recall) => {
+                    step_through_elementkind(ElementKind::List(recall), output);
+                }
+                ElementKind::Int(int) => {
+                    output.push(int);
+                }
+            }
+        }
+    }
+    output.to_vec()
 }
 
 fn main() {
     let input_text = read_data();
-
-    let mut left: ElementKind = ElementKind::Int(0);
-    let mut right: ElementKind = ElementKind::Int(0);
     let mut i = 1;
     for l in input_text.lines() {
+        println!("{l}");
         if l.is_empty() {
             i = 1;
-            println!("");
             continue;
         }
-        match i {
-            1 => (_, left) = parse_int_list(l).unwrap(),
-            2 => {
-                (_, right) = parse_int_list(l).unwrap();
-                compare_left_right(&left, &right)
-            }
-            _ => {}
-        }
+
+        let mut left_e: Vec<i32> = Vec::new();
+        let left_list = step_through_elementkind(parse_int_list(l).unwrap().1, &mut left_e);
+        println!("{:?}", left_list);
         i += 1;
     }
 }
