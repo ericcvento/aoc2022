@@ -60,7 +60,7 @@ fn step_through_elementkind(input: ElementKind, intermediate: &mut Vec<i32>) -> 
 fn main() {
     let input_text = read_data();
     let mut i = 1;
-    let mut j: i32 = 1;
+    let mut j: i32 = 0;
     let mut score: i32 = 0;
     let mut left_ints = Vec::new();
 
@@ -82,11 +82,17 @@ fn main() {
             if left_ints.len() > right_ints.len() {
                 continue;
             }
+
+            let mut incorrect = 0;
             for index in 0..left_ints.len() {
-                println!("{}-{}", left_ints[index], right_ints[index]);
+                println!("{j}:  {}-{}", left_ints[index], right_ints[index]);
                 if left_ints[index] > right_ints[index] {
-                    continue;
+                    incorrect = 1;
+                    break;
                 }
+            }
+            if incorrect == 1 {
+                continue;
             }
             score += j;
         }
