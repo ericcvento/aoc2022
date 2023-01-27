@@ -47,16 +47,16 @@ fn step_through_elementkind(
     mut level: i32,
     intermediate: &mut Vec<(i32, i32)>,
 ) -> Vec<(i32, i32)> {
-    level+=1; 
     if let ElementKind::List(items) = input {
         for item in items {
+            level += 1;
             match item {
                 ElementKind::List(recall) => {
                     if recall.is_empty() {
                         intermediate.push((level, -1));
                         continue;
                     }
-                    step_through_elementkind(ElementKind::List(recall), 0, intermediate);
+                    step_through_elementkind(ElementKind::List(recall), level, intermediate);
                 }
                 ElementKind::Int(int) => {
                     intermediate.push((level, int));
