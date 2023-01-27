@@ -32,3 +32,5 @@ fn compare_left_right(left: &ElementKind, right: &ElementKind) {
         } 
     }
 }
+
+10,[10,3,[0,5,9,3],[0,3,3,6,6]]
