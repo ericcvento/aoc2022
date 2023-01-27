@@ -13,6 +13,7 @@ enum ElementKind {
 
 fn read_data() -> String {
     let ft: String = fs::read_to_string(r"data\day13input.txt").expect("Invalid File.");
+    //let ft: String = fs::read_to_string(r"data\day13test.txt").expect("Invalid File.");
     ft
 }
 
@@ -41,15 +42,24 @@ fn parse_int_list(input: &str) -> IResult<&str, ElementKind> {
     Ok((remaining, ElementKind::List(ints)))
 }
 
-fn step_through_elementkind(input: ElementKind, intermediate: &mut Vec<i32>) -> Vec<i32> {
+fn step_through_elementkind(
+    input: ElementKind,
+    mut level: i32,
+    intermediate: &mut Vec<(i32, i32)>,
+) -> Vec<(i32, i32)> {
     if let ElementKind::List(items) = input {
         for item in items {
             match item {
                 ElementKind::List(recall) => {
-                    step_through_elementkind(ElementKind::List(recall), intermediate);
+                    level += 1;
+                    if recall.is_empty() {
+                        intermediate.push((level, -1));
+                        continue;
+                    }
+                    step_through_elementkind(ElementKind::List(recall), level, intermediate);
                 }
                 ElementKind::Int(int) => {
-                    intermediate.push(int);
+                    intermediate.push((level, int));
                 }
             }
         }
@@ -60,43 +70,31 @@ fn step_through_elementkind(input: ElementKind, intermediate: &mut Vec<i32>) -> 
 fn main() {
     let input_text = read_data();
     let mut i = 1;
-    let mut j: i32 = 0;
-    let mut score: i32 = 0;
-    let mut left_ints = Vec::new();
+    let mut left_parsed;
+    let mut right_parsed;
 
+    //main loop
     for l in input_text.lines() {
         if l.is_empty() {
             i = 1;
+            println!("{l}");
             continue;
         }
         println!("{i}: {l}");
-        if i == 1 {
-            left_ints = step_through_elementkind(parse_int_list(l).unwrap().1, &mut Vec::new());
-        }
-        if i == 2 {
-            let right_ints =
-                step_through_elementkind(parse_int_list(l).unwrap().1, &mut Vec::new());
-
-            j += 1;
-
-            if left_ints.len() > right_ints.len() {
-                continue;
+        match i {
+            1 => {
+                left_parsed = parse_int_list(l).unwrap().1;
+                let left = step_through_elementkind(left_parsed, 0, &mut Vec::new());
+                println!("{:?}", left);
             }
+            2 => {
+                right_parsed = parse_int_list(l).unwrap().1;
+                let right = step_through_elementkind(right_parsed, 0, &mut Vec::new());
+                println!("{:?}", right);
+            }
+            _ => {}
+        };
 
-            let mut incorrect = 0;
-            for index in 0..left_ints.len() {
-                println!("{j}:  {}-{}", left_ints[index], right_ints[index]);
-                if left_ints[index] > right_ints[index] {
-                    incorrect = 1;
-                    break;
-                }
-            }
-            if incorrect == 1 {
-                continue;
-            }
-            score += j;
-        }
         i += 1;
     }
-    println!("{score}");
 }
