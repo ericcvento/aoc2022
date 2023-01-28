@@ -13,7 +13,7 @@ enum ElementKind {
 
 fn read_data() -> String {
     let ft: String = fs::read_to_string(r"data\day13input.txt").expect("Invalid File.");
-    //let ft: String = fs::read_to_string(r"data\day13test.txt").expect("Invalid File.");
+    let ft: String = fs::read_to_string(r"data\day13test.txt").expect("Invalid File.");
     ft
 }
 
@@ -44,25 +44,16 @@ fn parse_int_list(input: &str) -> IResult<&str, ElementKind> {
 
 fn step_through_elementkind(
     input: ElementKind,
-    mut level: i32,
-    intermediate: &mut Vec<(i32, i32)>,
-) -> Vec<(i32, i32)> {
-    if let ElementKind::List(items) = input {
-        for item in items {
-            level += 1;
-            match item {
-                ElementKind::List(recall) => {
-                    if recall.is_empty() {
-                        intermediate.push((level, -1));
-                        continue;
-                    }
-                    step_through_elementkind(ElementKind::List(recall), level, intermediate);
-                }
-                ElementKind::Int(int) => {
-                    intermediate.push((level, int));
-                }
+    intermediate: &mut Vec<ElementKind>,
+) -> Vec<ElementKind> {
+    match input {
+        ElementKind::List(items) => {
+            for item in items {
+                intermediate.push(item.clone());
+                step_through_elementkind(item, intermediate);
             }
         }
+        ElementKind::Int(items) => {}
     }
     intermediate.to_vec()
 }
@@ -84,12 +75,14 @@ fn main() {
         match i {
             1 => {
                 left_parsed = parse_int_list(l).unwrap().1;
-                let left = step_through_elementkind(left_parsed, 0, &mut Vec::new());
-                println!("{:?}", left);
+                let lefts = step_through_elementkind(left_parsed, &mut Vec::new());
+                for left in lefts {
+                    println!("{:?}", left);
+                }
             }
             2 => {
                 right_parsed = parse_int_list(l).unwrap().1;
-                let right = step_through_elementkind(right_parsed, 0, &mut Vec::new());
+                let right = step_through_elementkind(right_parsed, &mut Vec::new());
                 println!("{:?}", right);
             }
             _ => {}
