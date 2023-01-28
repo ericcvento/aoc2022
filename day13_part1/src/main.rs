@@ -61,8 +61,6 @@ fn step_through_elementkind(
 fn main() {
     let input_text = read_data();
     let mut i = 1;
-    let mut left_parsed;
-    let mut right_parsed;
 
     //main loop
     for l in input_text.lines() {
@@ -72,22 +70,11 @@ fn main() {
             continue;
         }
         println!("{i}: {l}");
-        match i {
-            1 => {
-                left_parsed = parse_int_list(l).unwrap().1;
-                let lefts = step_through_elementkind(left_parsed, &mut Vec::new());
-                for left in lefts {
-                    println!("{:?}", left);
-                }
-            }
-            2 => {
-                right_parsed = parse_int_list(l).unwrap().1;
-                let right = step_through_elementkind(right_parsed, &mut Vec::new());
-                println!("{:?}", right);
-            }
-            _ => {}
-        };
-
+        let parsed = parse_int_list(l).unwrap().1;
+        let elements = step_through_elementkind(parsed, &mut Vec::new());
+        for element in elements {
+            println!("{:?}", element);
+        }
         i += 1;
     }
 }
