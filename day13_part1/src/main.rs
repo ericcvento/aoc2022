@@ -4,6 +4,7 @@ use nom::bytes::complete::tag;
 use nom::multi::separated_list0;
 use nom::IResult;
 use std::fs;
+use std::cmp::min; 
 
 #[derive(Debug, Clone)]
 enum ElementKind {
@@ -53,14 +54,22 @@ fn step_through_elementkind(
                 step_through_elementkind(item, intermediate);
             }
         }
-        ElementKind::Int(items) => {}
+        ElementKind::Int(_) => {}
     }
     intermediate.to_vec()
+}
+
+fn compare_elements(left:&Vec<ElementKind>,right:&Vec<ElementKind>) {
+    let length = min(left.len(),right.len()); 
+    for l in 0..length {
+        println!("L: {:?} R:{:?}",left[l],right[l])
+    }
 }
 
 fn main() {
     let input_text = read_data();
     let mut i = 1;
+    let mut l_elements = Vec::new();
 
     //main loop
     for l in input_text.lines() {
@@ -72,8 +81,13 @@ fn main() {
         println!("{i}: {l}");
         let parsed = parse_int_list(l).unwrap().1;
         let elements = step_through_elementkind(parsed, &mut Vec::new());
-        for element in elements {
-            println!("{:?}", element);
+        match i {
+            1 => l_elements = elements.clone(),
+            2 => {
+                let r_elements = elements.clone();
+                compare_elements(&l_elements, &r_elements); 
+            }
+            _ => {}
         }
         i += 1;
     }
