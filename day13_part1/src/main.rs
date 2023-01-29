@@ -3,8 +3,8 @@ use nom::bytes::complete::is_a;
 use nom::bytes::complete::tag;
 use nom::multi::separated_list0;
 use nom::IResult;
+use std::cmp::min;
 use std::fs;
-use std::cmp::min; 
 
 #[derive(Debug, Clone)]
 enum ElementKind {
@@ -59,10 +59,10 @@ fn step_through_elementkind(
     intermediate.to_vec()
 }
 
-fn compare_elements(left:&Vec<ElementKind>,right:&Vec<ElementKind>) {
-    let length = min(left.len(),right.len()); 
+fn compare_elements(left: &Vec<ElementKind>, right: &Vec<ElementKind>) {
+    let length = min(left.len(), right.len());
     for l in 0..length {
-        println!("L: {:?} R:{:?}",left[l],right[l])
+        println!("L: {:?} R:{:?}", left[l], right[l])
     }
 }
 
@@ -85,7 +85,7 @@ fn main() {
             1 => l_elements = elements.clone(),
             2 => {
                 let r_elements = elements.clone();
-                compare_elements(&l_elements, &r_elements); 
+                compare_elements(&l_elements, &r_elements);
             }
             _ => {}
         }
