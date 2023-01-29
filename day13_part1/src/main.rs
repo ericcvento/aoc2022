@@ -3,6 +3,7 @@ use nom::bytes::complete::is_a;
 use nom::bytes::complete::tag;
 use nom::multi::separated_list0;
 use nom::IResult;
+use std::cmp::max;
 use std::cmp::min;
 use std::fs;
 
@@ -14,7 +15,7 @@ enum ElementKind {
 
 fn read_data() -> String {
     let ft: String = fs::read_to_string(r"data\day13input.txt").expect("Invalid File.");
-    let ft: String = fs::read_to_string(r"data\day13test.txt").expect("Invalid File.");
+    //let ft: String = fs::read_to_string(r"data\day13test.txt").expect("Invalid File.");
     ft
 }
 
@@ -61,8 +62,14 @@ fn step_through_elementkind(
 
 fn compare_elements(left: &Vec<ElementKind>, right: &Vec<ElementKind>) {
     let length = min(left.len(), right.len());
-    for l in 0..length {
-        println!("L: {:?} R:{:?}", left[l], right[l])
+    let max_length = max(left.len(), right.len());
+
+    if length <= 5 {
+        return;
+    }
+    for l in 0..5 {
+        println!("Level {l}:");
+        println!("L: {:?} \nR:{:?}", left[l], right[l])
     }
 }
 
