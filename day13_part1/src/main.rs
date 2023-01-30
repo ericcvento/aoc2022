@@ -60,23 +60,29 @@ fn step_through_elementkind(
     intermediate.to_vec()
 }
 
-fn compare_elements(left: &Vec<ElementKind>, right: &Vec<ElementKind>) {
-    let length = min(left.len(), right.len());
-    let max_length = max(left.len(), right.len());
-
-    if length <= 5 {
-        return;
+fn return_next_level(input: &ElementKind) -> Vec<ElementKind> {
+    let mut output = Vec::new();
+    if let ElementKind::List(items) = input {
+        for item in items {
+            output.push(item.clone());
+        }
     }
-    for l in 0..5 {
-        println!("Level {l}:");
-        println!("L: {:?} \nR:{:?}", left[l], right[l])
-    }
+    output
 }
+
+fn compare_elements_1(left: &ElementKind, right: &ElementKind) {
+    //return top level items
+    let lefts = return_next_level(left);
+    let rights = return_next_level(right);
+    compare_elements_n(lefts, rights);
+}
+
+fn compare_elements_n(left: Vec<ElementKind>, right: Vec<ElementKind>) {}
 
 fn main() {
     let input_text = read_data();
     let mut i = 1;
-    let mut l_elements = Vec::new();
+    let mut l_elements: ElementKind = ElementKind::List(Vec::new());
 
     //main loop
     for l in input_text.lines() {
@@ -87,12 +93,12 @@ fn main() {
         }
         println!("{i}: {l}");
         let parsed = parse_int_list(l).unwrap().1;
-        let elements = step_through_elementkind(parsed, &mut Vec::new());
+        //let elements = step_through_elementkind(parsed, &mut Vec::new());
         match i {
-            1 => l_elements = elements.clone(),
+            1 => l_elements = parsed.clone(),
             2 => {
-                let r_elements = elements.clone();
-                compare_elements(&l_elements, &r_elements);
+                let r_elements = parsed.clone();
+                compare_elements_1(&l_elements, &r_elements);
             }
             _ => {}
         }
