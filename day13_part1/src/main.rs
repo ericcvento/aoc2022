@@ -77,12 +77,14 @@ fn compare_elements_1(left: &ElementKind, right: &ElementKind) {
     compare_elements_n(lefts, rights);
 }
 
-fn compare_elements_n(left: Vec<ElementKind>, right: Vec<ElementKind>) {}
+fn compare_elements_n(left: Vec<ElementKind>, right: Vec<ElementKind>) {
+    println!("{:?}", left);
+    println!("{:?}", right);
+}
 
 fn main() {
     let input_text = read_data();
     let mut i = 1;
-    let mut l_elements: ElementKind = ElementKind::List(Vec::new());
 
     //main loop
     for l in input_text.lines() {
@@ -93,15 +95,6 @@ fn main() {
         }
         println!("{i}: {l}");
         let parsed = parse_int_list(l).unwrap().1;
-        //let elements = step_through_elementkind(parsed, &mut Vec::new());
-        match i {
-            1 => l_elements = parsed.clone(),
-            2 => {
-                let r_elements = parsed.clone();
-                compare_elements_1(&l_elements, &r_elements);
-            }
-            _ => {}
-        }
         i += 1;
     }
 }
